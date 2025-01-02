@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<section>
+    <h2>Categories</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Created At</th>
+        </tr>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>{{ category.type }}</td>
+                <td>{{ category.created_at }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="3">No categories available.</td></tr>
+        {% endfor %}
+    </table>
+</section>
+
+<section>
+    <h2>Budgets</h2>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+        </tr>
+        {% for budget in budgets %}
+            <tr>
+                <td>{{ budget.category.name }}</td>
+                <td>{{ budget.amount }}</td>
+                <td>{{ budget.created_at }}</td>
+                <td>{{ budget.updated_at }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4">No budgets available.</td></tr>
+        {% endfor %}
+    </table>
+</section>
+<!-- Add more sections as needed -->
+{% endblock %}
