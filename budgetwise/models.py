@@ -77,6 +77,15 @@ class Notification(models.Model):
         return f"Notification for {self.user.username}: {self.message[:50]}"
 
 
+class Update(models.Model):
+    version = models.CharField(max_length=20, help_text="Version number (e.g., v1.0.0)")
+    description = models.TextField(help_text="Description of the update")
+    release_date = models.DateField(help_text="Release date of the update")
+
+    def __str__(self):
+        return f"{self.version} - {self.release_date}"
+
+
 class AuditLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     action = models.CharField(max_length=50)  # e.g., "create", "update", "delete"

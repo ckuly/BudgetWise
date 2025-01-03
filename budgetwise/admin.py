@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Budget, Transaction, SavingsGoal, Profile, Notification, AuditLog
+from .models import Category, Budget, Transaction, SavingsGoal, Profile, Notification, AuditLog, Update
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -37,3 +37,4 @@ admin.site.register(SavingsGoal)
 admin.site.register(Profile)
 admin.site.register(Notification)
 admin.site.register(AuditLog)
+admin.site.register(Update)

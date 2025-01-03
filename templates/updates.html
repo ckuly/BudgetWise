@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+
+{% block title %}Updates - BudgetWise{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">BudgetWise Updates</h1>
+
+    {% if latest_update %}
+        <div class="featured-update mb-5 p-3 bg-light border rounded">
+            <h2 class="text-primary">Featured Version: {{ latest_update.version }}</h2>
+            <small class="text-muted">Released on {{ latest_update.release_date }}</small>
+            <p class="mt-2">{{ latest_update.description }}</p>
+        </div>
+    {% endif %}
+
+    <h3 class="text-center mt-4">Archived Updates</h3>
+    {% if archived_updates %}
+        <div class="list-group">
+            {% for update in archived_updates %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">Version: {{ update.version }}</h5>
+                    <small class="text-muted">Released on {{ update.release_date }}</small>
+                    <p class="mt-2">{{ update.description }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center">No archived updates available.</p>
+    {% endif %}
+</div>
+{% endblock %}

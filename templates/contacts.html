@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block title %}Contact Us - BudgetWise{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Contact Us</h1>
+    <p class="text-center">We'd love to hear from you! Whether you have questions, feedback, or need support, feel free to get in touch with us.</p>
+
+    <div class="row mt-4">
+        <!-- Contact Information -->
+        <div class="col-md-6 mb-4">
+            <h3>Our Contact Details</h3>
+            <ul class="list-unstyled">
+                <li><strong>Email:</strong> support@budgetwise.com</li>
+                <li><strong>Phone:</strong> +1 (123) 456-7890</li>
+                <li><strong>Address:</strong> 123 Finance Street, Budget City, BW 45678</li>
+            </ul>
+            <p>Follow us on:</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="#" class="text-primary">Facebook</a></li>
+                <li class="list-inline-item"><a href="#" class="text-info">Twitter</a></li>
+                <li class="list-inline-item"><a href="#" class="text-danger">Instagram</a></li>
+                <li class="list-inline-item"><a href="#" class="text-secondary">LinkedIn</a></li>
+            </ul>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="col-md-6">
+            <h3>Send Us a Message</h3>
+            <form method="post" action="#>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Your Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

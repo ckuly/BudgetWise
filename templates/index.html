@@ -5,12 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}BudgetWise{% endblock %}</title>
-    <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'index' %}">BudgetWise</a>
@@ -26,40 +24,65 @@
                         <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Analytics</a>
+                        <a class="nav-link" href="{% url 'analytics' %}">Analytics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Login</a>
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Register</a>
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacts</a>
+                        <a class="nav-link" href="{% url 'contacts' %}">Contacts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Updates</a>
+                        <a class="nav-link" href="{% url 'newsletter' %}">Newsletter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'updates' %}">Updates</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main content -->
-    <main class="container mt-4">
-        {% block content %}
-        <!-- Content goes here -->
-        {% endblock %}
-    </main>
+<main class="container mt-4">
+    {% block content %}
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Welcome to BudgetWise!</h2>
+            <p>BudgetWise is your one-stop solution for managing your personal finances. Whether you're looking to track your spending, set savings goals, or analyze your budget, BudgetWise provides you with the tools you need to make informed financial decisions.</p>
+        </div>
+    </div>
 
-    <!-- Footer -->
+    <div class="mt-4">
+        <h3>Key Features:</h3>
+        <ul>
+            <li><strong>Track Transactions:</strong> Keep a record of your daily expenses and income with a detailed transaction list.</li>
+            <li><strong>Manage Budgets:</strong> Set and manage budgets across multiple categories to keep your finances on track.</li>
+            <li><strong>Savings Goals:</strong> Create savings goals to ensure you're saving for future expenses, with progress tracking.</li>
+            <li><strong>Analytics & Reports:</strong> Gain insights into your spending patterns and financial trends with powerful analytics tools.</li>
+            <li><strong>Notifications & Alerts:</strong> Stay updated with automatic notifications about your budget status, goals, and more.</li>
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <h3>Why Choose BudgetWise?</h3>
+        <p>BudgetWise simplifies financial management with a user-friendly interface and powerful features. Whether you're a beginner trying to manage your first budget or an experienced investor tracking multiple financial goals, BudgetWise has everything you need to stay organized and in control of your finances.</p>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="#" class="btn btn-primary">Get Started Today</a>
+    </div>
+    {% endblock %}
+</main>
+
     <footer class="bg-light py-3 mt-4">
         <div class="container text-center">
             <p>© 2024 BudgetWise. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Add Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
