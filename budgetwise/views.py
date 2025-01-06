@@ -24,11 +24,11 @@ def contacts(request):
 
 def register(request):
     context = {}
-    return render(request, 'accounts/register.html', context)
+    return render(request, 'register.html', context)
 
 def login(request):
     context = {}
-    return render(request, 'accounts/login.html', context)
+    return render(request, 'registration/login.html', context)
 
 def dashboard(request):
     categories = Category.objects.all()

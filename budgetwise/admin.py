@@ -7,8 +7,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class BudgetAdmin(admin.ModelAdmin):
-    pass
-
+    list_display = ("user", "type", "amount", "category", "created_at", "updated_at")
+    list_editable = ("amount", "type", "category")
+    list_filter = ("user", "type", "category")
+    search_fields = ("user__username",)
 
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ("user", "type", "amount", "category", "created_at", "updated_at")
