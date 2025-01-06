@@ -11,7 +11,16 @@ class BudgetAdmin(admin.ModelAdmin):
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("user", "type", "amount", "category", "created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at")
+    list_filter = ("user", "type", "category")
+    list_editable = ("amount", "type", "category")
+    search_fields = ("user__username", "description")
+
+    fieldsets = (
+        ("General", {"fields": ("user", "type", "category", "amount", "description")}),
+        ("Time", {"fields": ("date", "created_at", "updated_at",)}),
+    )
 
 
 class SavingsAdmin(admin.ModelAdmin):
@@ -30,11 +39,15 @@ class AuditLogAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Category)
-admin.site.register(Budget)
-admin.site.register(Transaction)
-admin.site.register(SavingsGoal)
-admin.site.register(Profile)
-admin.site.register(Notification)
-admin.site.register(AuditLog)
-admin.site.register(Update)
+class UpdateAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Budget, BudgetAdmin)
+admin.site.register(Transaction, TransactionAdmin)
+admin.site.register(SavingsGoal, SavingsAdmin)
+admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Notification, NotificationAdmin)
+admin.site.register(AuditLog, AuditLogAdmin)
+admin.site.register(Update, UpdateAdmin)
