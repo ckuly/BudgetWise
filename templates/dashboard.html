@@ -1,50 +1,110 @@
 {% extends "index.html" %}
-
+{% load static %}
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
+<div class="container mt-4">
+    <h2 class="mb-4">Welcome to Your Dashboard, {{ user.username }}!</h2>
 
-<section>
-    <h2>Categories</h2>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Created At</th>
-        </tr>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category.name }}</td>
-                <td>{{ category.type }}</td>
-                <td>{{ category.created_at }}</td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="3">No categories available.</td></tr>
-        {% endfor %}
-    </table>
-</section>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Transactions</h5>
+                </div>
+                <div class="card-body">
+                    {% if transactions.exists %}
+                        <ul class="list-group">
+                            {% for transaction in transactions|slice:":5" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ transaction.date }} - {{ transaction.category.name }}
+                                    <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ transaction.amount }} {{ user.profile.currency }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="#" class="btn btn-link mt-2">View All Transactions</a>
+                    {% else %}
+                        <p>No recent transactions found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
-<section>
-    <h2>Budgets</h2>
-    <table>
-        <tr>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Created At</th>
-            <th>Updated At</th>
-        </tr>
-        {% for budget in budgets %}
-            <tr>
-                <td>{{ budget.category.name }}</td>
-                <td>{{ budget.amount }}</td>
-                <td>{{ budget.created_at }}</td>
-                <td>{{ budget.updated_at }}</td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="4">No budgets available.</td></tr>
-        {% endfor %}
-    </table>
-</section>
-<!-- Add more sections as needed -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Savings Goals</h5>
+                </div>
+                <div class="card-body">
+                    {% if savings_goals.exists %}
+                        <ul class="list-group">
+                            {% for goal in savings_goals %}
+                                <li class="list-group-item">
+                                    <strong>{{ goal.name }}</strong>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ goal.progress_percentage }}%" aria-valuenow="{{ goal.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                            {{ goal.progress_percentage|floatformat:2 }}%
+                                        </div>
+                                    </div>
+                                    <small>{{ goal.saved_amount }}/{{ goal.target_amount }} {{ user.profile.currency }}</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No savings goals set up yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Budgets Overview</h5>
+                </div>
+                <div class="card-body">
+                    {% if budgets.exists %}
+                        <ul class="list-group">
+                            {% for budget in budgets %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ budget.category.name }}
+                                    <span>{{ budget.amount }} {{ user.profile.currency }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="#" class="btn btn-link mt-2">Manage Budgets</a>
+                    {% else %}
+                        <p>No budgets found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Notifications</h5>
+                </div>
+                <div class="card-body">
+                    {% if notifications.exists %}
+                        <ul class="list-group">
+                            {% for notification in notifications %}
+                                <li class="list-group-item">
+                                    {{ notification.message }}
+                                    <small class="text-muted d-block">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No new notifications.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from budgetwise.models import Transaction, Category, Budget, SavingsGoal, Profile, Notification, AuditLog, Update
 
@@ -41,21 +42,21 @@ def profile(request):
     context = {}
     return render(request, "profile.html", context)
 
+@login_required
 def dashboard(request):
-    categories = Category.objects.all()
-    budgets = Budget.objects.all()
-    transactions = Transaction.objects.all()
-    savings_goals = SavingsGoal.objects.all()
-    profiles = Profile.objects.all()
-    notifications = Notification.objects.filter(user=request.user, is_read=False) if request.user.is_authenticated else []
-    audit_logs = AuditLog.objects.all()
+    user = request.user
+
+    budgets = Budget.objects.filter(user=user)
+    transactions = Transaction.objects.filter(user=user).order_by('-date')  # Ordered by date
+    savings_goals = SavingsGoal.objects.filter(user=user)
+    notifications = Notification.objects.filter(user=user, is_read=False)
+    audit_logs = AuditLog.objects.filter(user=user)
 
     context = {
-        "categories": categories,
         "budgets": budgets,
         "transactions": transactions,
         "savings_goals": savings_goals,
-        "profiles": profiles,
+        "profile": user.profile,
         "notifications": notifications,
         "audit_logs": audit_logs,
     }

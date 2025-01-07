@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum
 
 
 class Category(models.Model):
@@ -29,6 +30,7 @@ class Budget(models.Model):
     def __str__(self):
         return f"{self.category.name} - {self.amount}"
 
+
 class Account(models.Model):
     """Account explanation here"""
     ACCOUNT_TYPES = [
@@ -46,6 +48,7 @@ class Account(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_account_type_display()})"
+
 
 class Transaction(models.Model):
     """Transaction explanation here"""
@@ -74,9 +77,18 @@ class SavingsGoal(models.Model):
     saved_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     due_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    transactions = models.ManyToManyField(Transaction, related_name='savings_goals', blank=True)
 
+    # @property is used to make methods act like attributes.
+    # Methods with @property don’t accept parameters (other than self).
+    # The method is automatically computed when accessed as an attribute.
+    @property
     def progress_percentage(self):
         return (self.saved_amount / self.target_amount) * 100 if self.target_amount > 0 else 0
+
+    class Meta:
+        verbose_name = "Saving Goal"
+        verbose_name_plural = 'Saving Goals'
 
     def __str__(self):
         return f"{self.name} - {self.saved_amount}/{self.target_amount}"
@@ -88,6 +100,10 @@ class Profile(models.Model):
     currency = models.CharField(max_length=10, default="USD")  # e.g., USD, EUR
     timezone = models.CharField(max_length=50, default="UTC")
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Profile"
+        verbose_name_plural = 'Profiles'
 
     def __str__(self):
         return f"Profile of {self.user.username}"
@@ -122,6 +138,9 @@ class AuditLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
 
+    class Meta:
+        verbose_name = "Audit Log"
+        verbose_name_plural = 'Audit Logs'
+
     def __str__(self):
         return f"{self.action.capitalize()} - {self.model_name} at {self.timestamp}"
-

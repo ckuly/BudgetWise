@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Budget, Transaction, SavingsGoal, Profile, Notification, AuditLog, Update
+from .models import Category, Budget, Transaction, SavingsGoal, Profile, Notification, AuditLog, Update, Account
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -44,6 +44,8 @@ class AuditLogAdmin(admin.ModelAdmin):
 class UpdateAdmin(admin.ModelAdmin):
     pass
 
+class AccountAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Budget, BudgetAdmin)
@@ -53,5 +55,6 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Notification, NotificationAdmin)
 admin.site.register(AuditLog, AuditLogAdmin)
 admin.site.register(Update, UpdateAdmin)
+admin.site.register(Account, AccountAdmin)
 
 # truksta inlines kuriu reiketu.
