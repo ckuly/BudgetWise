@@ -37,6 +37,8 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
                         <li><a class="dropdown-item" href="#">My Dashboard</a></li>
+                        <li><a class="dropdown-item" href="#">My Analytics</a></li>
+                        <li><a class="dropdown-item" href="#">My Financial Statements</a></li>
                         <li>
                             <form method="post" action="{% url 'logout' %}" class="dropdown-item">
                                 {% csrf_token %}

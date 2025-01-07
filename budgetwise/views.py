@@ -69,3 +69,7 @@ def analytics(request):
 def newsletter(request):
     context = {}
     return render(request, "newsletter.html", context)
+
+def error_404(request, exception=None):
+    """Render a custom 404 page."""
+    return render(request, '404.html', status=404)
