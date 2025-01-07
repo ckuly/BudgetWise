@@ -9,42 +9,61 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'index' %}">BudgetWise</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'analytics' %}">Analytics</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contacts' %}">Contacts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'newsletter' %}">Newsletter</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'updates' %}">Updates</a>
-                    </li>
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'index' %}">BudgetWise</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'analytics' %}">Analytics</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg class="bi bi-person" width="1.5em" height="1.5em" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10z"/>
+                            <path fill-rule="evenodd" d="M8 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="#">My Dashboard</a></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" class="dropdown-item">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link p-0 text-decoration-none">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contacts' %}">Contacts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'updates' %}">Updates</a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
 <main class="container mt-4">
     {% block content %}
@@ -72,7 +91,7 @@
     </div>
 
     <div class="mt-4 text-center">
-        <a href="#" class="btn btn-primary">Get Started Today</a>
+        <a href="{% url 'register' %}" class="btn btn-primary">Get Started Today</a>
     </div>
     {% endblock %}
 </main>
@@ -80,6 +99,7 @@
     <footer class="bg-light py-3 mt-4">
         <div class="container text-center">
             <p>© 2024 BudgetWise. All rights reserved.</p>
+            <p>This is the {{ num_visits }}th time you have visited.</p>
         </div>
     </footer>
 

@@ -53,3 +53,5 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Notification, NotificationAdmin)
 admin.site.register(AuditLog, AuditLogAdmin)
 admin.site.register(Update, UpdateAdmin)
+
+# truksta inlines kuriu reiketu.
