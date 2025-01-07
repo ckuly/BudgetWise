@@ -73,3 +73,7 @@ def newsletter(request):
 def error_404(request, exception=None):
     """Render a custom 404 page."""
     return render(request, '404.html', status=404)
+
+def error_500(request, exception=None):
+    """Render a custom 500 page."""
+    return render(request, '500.html', status=500)

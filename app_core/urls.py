@@ -20,8 +20,7 @@ from django.urls import path, include
 from budgetwise import views
 
 handler404 = views.error_404
-# handler500 = views.error_500
-
+handler500 = views.error_500
 
 urlpatterns = [
     path('', lambda request: redirect('home/', permanent=True)),
