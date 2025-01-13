@@ -6,4 +6,4 @@ class BudgetwiseConfig(AppConfig):
     name = 'budgetwise'\
 
     def ready(self):
-        import budgetwise.signals
+        from .signals import create_user_profile, save_user_profile

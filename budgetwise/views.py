@@ -86,6 +86,11 @@ def profile(request):
         # Get the user's profile
         profile = request.user.profile
 
+        # Check if the user wants to remove the profile picture
+        if 'remove_picture' in request.POST:
+            profile.profile_picture.delete(save=False)  # Deletes the file from storage
+            profile.profile_picture = 'profile_pictures/default.jpg'  # Reset to default
+
         # Update profile fields
         profile.currency = request.POST.get("currency", profile.currency)
         profile.timezone = request.POST.get("timezone", profile.timezone)
@@ -161,13 +166,16 @@ def generate_monthly_chart(user, year):
     x = range(12)
 
     income_bars = ax.bar(x, income_data, width=width, label='Income', color='#4CAF50', alpha=0.8, edgecolor='black')
-    expense_bars = ax.bar([i + width for i in x], expense_data, width=width, label='Expense', color='#F44336', alpha=0.8, edgecolor='black')
+    expense_bars = ax.bar([i + width for i in x], expense_data, width=width, label='Expense', color='#F44336',
+                          alpha=0.8, edgecolor='black')
 
     # Add values above the bars
     for bar in income_bars:
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center', va='bottom', fontsize=10)
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
+                va='bottom', fontsize=10)
     for bar in expense_bars:
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center', va='bottom', fontsize=10)
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
+                va='bottom', fontsize=10)
 
     # Customize the chart
     ax.set_xticks([i + width / 2 for i in x])
@@ -223,6 +231,12 @@ def analytics(request):
     return render(request, "analytics.html", context)
 
 
+@login_required
+def membership(request):
+    """Display membership plans."""
+    return render(request, "membership.html")
+
+
 def newsletter(request):
     context = {}
     return render(request, "newsletter.html", context)
@@ -236,3 +250,17 @@ def error_404(request, exception=None):
 def error_500(request, exception=None):
     """Render a custom 500 page."""
     return render(request, '500.html', status=500)
+
+
+@login_required
+def change_plan(request, plan):
+    """Change the user's membership plan."""
+    valid_plans = ['free', 'premium', 'elite']
+    if plan in valid_plans:
+        profile = request.user.profile
+        profile.plan = plan
+        profile.save()
+        messages.success(request, f"Your plan has been updated to {plan.capitalize()}!")
+    else:
+        messages.error(request, "Invalid plan selection.")
+    return redirect('membership')

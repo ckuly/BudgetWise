@@ -12,6 +12,7 @@ class BudgetAdmin(admin.ModelAdmin):
     list_filter = ("user", "type", "category")
     search_fields = ("user__username",)
 
+
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ("user", "type", "amount", "category", "created_at", "updated_at")
     readonly_fields = ("created_at", "updated_at")
@@ -44,8 +45,10 @@ class AuditLogAdmin(admin.ModelAdmin):
 class UpdateAdmin(admin.ModelAdmin):
     pass
 
+
 class AccountAdmin(admin.ModelAdmin):
     pass
+
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Budget, BudgetAdmin)

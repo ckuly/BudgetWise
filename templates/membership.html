@@ -1,0 +1,79 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}Membership Plans{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Choose Your Membership Plan</h2>
+    <p class="text-center text-muted mb-5">Select a plan that works best for you and unlock exclusive features!</p>
+
+    <div class="row justify-content-center">
+        <!-- Free Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light text-center">
+                    <h5 class="mb-0">Free</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="card-title">$0.00<span class="fs-6 text-muted">/mo</span></h3>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Basic Features</li>
+                        <li>Access to Transactions</li>
+                        <li>Community Support</li>
+                    </ul>
+                    {% if user.profile.plan == 'free' %}
+                        <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
+                    {% else %}
+                        <a href="{% url 'change_plan' 'free' %}" class="btn btn-outline-primary btn-lg w-100">Choose Free</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="mb-0">Premium</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="card-title">$7.99<span class="fs-6 text-muted">/mo</span></h3>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Advanced Features</li>
+                        <li>Priority Support</li>
+                        <li>Access to Analytics</li>
+                    </ul>
+                    {% if user.profile.plan == 'premium' %}
+                        <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
+                    {% else %}
+                        <a href="{% url 'change_plan' 'premium' %}" class="btn btn-primary btn-lg w-100">Choose Premium</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Elite Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h5 class="mb-0">Elite</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="card-title">$12.99<span class="fs-6 text-muted">/mo</span></h3>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>All Premium Features</li>
+                        <li>1-on-1 Consultation</li>
+                        <li>Early Access to Updates</li>
+                    </ul>
+                    {% if user.profile.plan == 'elite' %}
+                        <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
+                    {% else %}
+                        <a href="{% url 'change_plan' 'elite' %}" class="btn btn-warning btn-lg w-100 text-dark">Choose Elite</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

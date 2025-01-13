@@ -4,6 +4,7 @@ from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from .models import SavingsGoal, Transaction, Profile
 
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
@@ -14,6 +15,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
 
 # Signal to handle updates on transaction changes
 @receiver(m2m_changed, sender=SavingsGoal.transactions.through)

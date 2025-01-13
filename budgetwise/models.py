@@ -99,6 +99,10 @@ class SavingsGoal(models.Model):
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.db import models
+from django.contrib.auth.models import User
+
+
 class Profile(models.Model):
     """Profile explanation here"""
     CURRENCIES = [
@@ -107,10 +111,18 @@ class Profile(models.Model):
         ('JPY', 'Japanese Yen'),
         ('GBP', 'Pound Sterling'),
     ]
+
+    PLANS = [
+        ('free', 'Free'),
+        ('premium', 'Premium'),
+        ('elite', 'Elite'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     currency = models.CharField(max_length=3, choices=CURRENCIES, default="USD")
     timezone = models.CharField(max_length=50, default="UTC")
     profile_picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/default.jpg')
+    plan = models.CharField(max_length=10, choices=PLANS, default="free")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -119,7 +131,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"Profile of {self.user.username}"
-
 
 
 class Notification(models.Model):
