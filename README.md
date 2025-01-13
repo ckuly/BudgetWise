@@ -40,6 +40,7 @@
    ```
 4. Apply database migrations:
    ```bash
+   python manage.py makemigrations
    python manage.py migrate
    ```
 5. Start the server:
