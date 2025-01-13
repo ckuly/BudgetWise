@@ -36,12 +36,12 @@ def updates(request):
         "latest_update": latest_update,
         "archived_updates": archived_updates,
     }
-    return render(request, "updates.html", context)
+    return render(request, "base/updates.html", context)
 
 
 def contacts(request):
     context = {}
-    return render(request, "contacts.html", context)
+    return render(request, "base/contacts.html", context)
 
 
 @csrf_protect
@@ -71,7 +71,7 @@ def register(request):
         else:
             messages.error(request, 'Slaptažodžiai nesutampa!')
             return redirect('register')
-    return render(request, 'register.html')
+    return render(request, 'base/register.html')
 
 
 def login(request):
@@ -108,7 +108,7 @@ def profile(request):
     context = {
         "user": request.user,
     }
-    return render(request, "profile.html", context)
+    return render(request, "base/profile.html", context)
 
 
 @login_required
@@ -130,7 +130,7 @@ def dashboard(request):
         "audit_logs": audit_logs,
     }
 
-    return render(request, "dashboard.html", context)
+    return render(request, "base/dashboard.html", context)
 
 
 def generate_monthly_chart(user, year):
@@ -228,28 +228,28 @@ def analytics(request):
         'selected_year': selected_year,
         'years': [year.year for year in years],
     }
-    return render(request, "analytics.html", context)
+    return render(request, "base/analytics.html", context)
 
 
 @login_required
 def membership(request):
     """Display membership plans."""
-    return render(request, "membership.html")
+    return render(request, "base/membership.html")
 
 
 def newsletter(request):
     context = {}
-    return render(request, "newsletter.html", context)
+    return render(request, "base/newsletter.html", context)
 
 
 def error_404(request, exception=None):
     """Render a custom 404 page."""
-    return render(request, '404.html', status=404)
+    return render(request, 'errors/404.html', status=404)
 
 
 def error_500(request, exception=None):
     """Render a custom 500 page."""
-    return render(request, '500.html', status=500)
+    return render(request, 'errors/500.html', status=500)
 
 
 @login_required

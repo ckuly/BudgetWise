@@ -1,8 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Sum
-from forex_python.converter import CurrencyRates
-from decimal import Decimal
 
 
 class Category(models.Model):
