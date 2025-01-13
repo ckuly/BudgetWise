@@ -35,14 +35,14 @@
                         <!-- Username -->
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" id="username" name="username" class="form-control"
+                            <input type="text" id="username" name="username" class="form-control text-muted"
                                    value="{{ user.username }}" readonly>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" id="email" name="email" class="form-control"
+                            <input type="email" id="email" name="email" class="form-control text-muted"
                                    value="{{ user.email }}" readonly>
                         </div>
 
@@ -66,10 +66,17 @@
                                    value="{{ user.profile.timezone }}">
                         </div>
 
+                        <!-- Current Plan -->
+                        <div class="mb-3">
+                            <label class="form-label">Current Plan</label>
+                            <input type="text" class="form-control text-muted"
+                                   value="{{ user.profile.get_plan_display }}" readonly>
+                        </div>
+
                         <!-- Created At -->
                         <div class="mb-3">
                             <label class="form-label">Account Created At</label>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control text-muted"
                                    value="{{ user.profile.created_at|date:'M d, Y H:i' }}" readonly>
                         </div>
 
