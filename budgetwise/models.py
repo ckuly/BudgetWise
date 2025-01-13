@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
+from forex_python.converter import CurrencyRates
+from decimal import Decimal
 
 
 class Category(models.Model):
@@ -96,8 +98,14 @@ class SavingsGoal(models.Model):
 
 class Profile(models.Model):
     """Profile explanation here"""
+    CURRENCIES = [
+        ('USD', 'Dollar'),
+        ('EUR', 'Euro'),
+        ('JPY', 'Japanese Yen'),
+        ('GBP', 'Pound Sterling'),
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    currency = models.CharField(max_length=10, default="USD")  # e.g., USD, EUR
+    currency = models.CharField(max_length=3, choices=CURRENCIES, default="USD")
     timezone = models.CharField(max_length=50, default="UTC")
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -1,5 +1,65 @@
 {% extends "index.html" %}
+{% load static %}
+{% block title %}Analytics{% endblock %}
 
 {% block content %}
-<h3>Analytics</h3>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Analytics Overview</h2>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                    <h5 class="mb-0">Monthly Income and Expenses ({{ selected_year }})</h5>
+                    <form method="get" class="d-inline-flex">
+                        <select id="year-select" name="year" class="form-select form-select-sm" onchange="this.form.submit()">
+                            {% for year in years %}
+                                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                <div class="card-body text-center">
+                    <img src="data:image/png;base64,{{ monthly_chart }}" alt="Monthly Income and Expenses" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Monthly Transcript</h5>
+                </div>
+                <div class="card-body p-2">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Income</th>
+                                <th>Expense</th>
+                                <th>Net</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in monthly_net_data %}
+                                <tr>
+                                    <td>{{ data.month }}</td>
+                                    <td class="text-success">{{ data.income }}</td>
+                                    <td class="text-danger">{{ data.expense }}</td>
+                                    <td class="{% if data.net >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ data.net }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

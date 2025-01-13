@@ -5,7 +5,6 @@ from .models import SavingsGoal, Transaction
 
 
 # Signal to handle updates on transaction changes
-#
 @receiver(m2m_changed, sender=SavingsGoal.transactions.through)
 def update_savings_goal_saved_amount_on_transaction_change(sender, instance, action, **kwargs):
     if action in ['post_add', 'post_remove']:
