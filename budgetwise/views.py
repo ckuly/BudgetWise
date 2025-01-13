@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from budgetwise.models import Transaction, Category, Budget, SavingsGoal, Profile, Notification, AuditLog, Update
+from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update
 import io
 import base64
 import matplotlib.pyplot as plt
@@ -119,7 +119,6 @@ def dashboard(request):
     transactions = Transaction.objects.filter(user=user).order_by('-date')  # Ordered by date
     savings_goals = SavingsGoal.objects.filter(user=user)
     notifications = Notification.objects.filter(user=user, is_read=False)
-    audit_logs = AuditLog.objects.filter(user=user)
 
     context = {
         "budgets": budgets,
@@ -127,31 +126,26 @@ def dashboard(request):
         "savings_goals": savings_goals,
         "profile": user.profile,
         "notifications": notifications,
-        "audit_logs": audit_logs,
     }
 
     return render(request, "base/dashboard.html", context)
 
 
 def generate_monthly_chart(user, year):
-    # Initialize data structure
-    months = list(calendar.month_name)[1:]  # ['January', ..., 'December']
+    months = list(calendar.month_name)[1:]
     income_data = [0] * 12
     expense_data = [0] * 12
-    net_data = []  # To store net balance for each month
+    net_data = []
 
-    # Query transactions for the specified year
     transactions = Transaction.objects.filter(user=user, date__year=year)
 
-    # Aggregate income and expense by month
     for transaction in transactions:
-        month_index = transaction.date.month - 1  # 0-based index
+        month_index = transaction.date.month - 1
         if transaction.type == 'income':
             income_data[month_index] += transaction.amount
         elif transaction.type == 'expense':
             expense_data[month_index] += transaction.amount
 
-    # Calculate net balance for each month
     for i in range(12):
         net_data.append({
             "month": months[i],
@@ -160,7 +154,6 @@ def generate_monthly_chart(user, year):
             "net": income_data[i] - expense_data[i],
         })
 
-    # Generate the bar chart
     fig, ax = plt.subplots(figsize=(11, 5))
     width = 0.4
     x = range(12)
@@ -169,7 +162,6 @@ def generate_monthly_chart(user, year):
     expense_bars = ax.bar([i + width for i in x], expense_data, width=width, label='Expense', color='#F44336',
                           alpha=0.8, edgecolor='black')
 
-    # Add values above the bars
     for bar in income_bars:
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
                 va='bottom', fontsize=10)
@@ -177,7 +169,6 @@ def generate_monthly_chart(user, year):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
                 va='bottom', fontsize=10)
 
-    # Customize the chart
     ax.set_xticks([i + width / 2 for i in x])
     ax.set_xticklabels(months, rotation=45, ha='right', fontsize=12)
     ax.set_title(f"Monthly Income and Expenses - {year}", fontsize=16, fontweight='bold', pad=20)
@@ -185,13 +176,10 @@ def generate_monthly_chart(user, year):
     ax.set_ylabel("Amount (in your currency)", fontsize=14, labelpad=10)
     ax.legend(fontsize=12, loc='upper right', frameon=True, edgecolor='black', title='Legend', title_fontsize=12)
 
-    # Add gridlines for readability
     ax.grid(True, which='major', linestyle='--', linewidth=0.5, alpha=0.7)
 
-    # Set tight layout for proper spacing
     plt.tight_layout()
 
-    # Save the chart to a BytesIO object
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', dpi=300)
     buffer.seek(0)
@@ -199,7 +187,6 @@ def generate_monthly_chart(user, year):
     buffer.close()
     plt.close(fig)
 
-    # Convert the image to base64
     chart_base64 = base64.b64encode(image_png).decode('utf-8')
 
     return chart_base64, net_data
@@ -209,17 +196,14 @@ def generate_monthly_chart(user, year):
 def analytics(request):
     user = request.user
 
-    # Get the selected year from the request, default to the current year
     selected_year = request.GET.get('year', now().year)
     try:
         selected_year = int(selected_year)
     except ValueError:
         selected_year = now().year
 
-    # Generate the monthly chart and net balances for the selected year
     monthly_chart, monthly_net_data = generate_monthly_chart(user, selected_year)
 
-    # Get available years from the user's transactions
     years = Transaction.objects.filter(user=user).dates('date', 'year')
 
     context = {

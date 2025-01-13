@@ -30,25 +30,6 @@ class Budget(models.Model):
         return f"{self.category.name} - {self.amount}"
 
 
-class Account(models.Model):
-    """Account explanation here"""
-    ACCOUNT_TYPES = [
-        ('AS', 'Assets'),
-        ('LI', 'Liabilities'),
-        ('EQ', 'Equity'),
-        ('RE', 'Revenue'),
-        ('EX', 'Expenses'),
-    ]
-    name = models.CharField(max_length=100)
-    account_type = models.CharField(max_length=2, choices=ACCOUNT_TYPES)
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.name} ({self.get_account_type_display()})"
-
-
 class Transaction(models.Model):
     """Transaction explanation here"""
     TRANSACTION_TYPES = (
@@ -78,9 +59,6 @@ class SavingsGoal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     transactions = models.ManyToManyField(Transaction, related_name='savings_goals', blank=True)
 
-    # @property is used to make methods act like attributes.
-    # Methods with @property don’t accept parameters (other than self).
-    # The method is automatically computed when accessed as an attribute.
     @property
     def progress_percentage(self):
         return (self.saved_amount / self.target_amount) * 100 if self.target_amount > 0 else 0
@@ -91,13 +69,6 @@ class SavingsGoal(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.saved_amount}/{self.target_amount}"
-
-
-from django.db import models
-from django.contrib.auth.models import User
-
-from django.db import models
-from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
@@ -149,19 +120,3 @@ class Update(models.Model):
 
     def __str__(self):
         return f"{self.version} - {self.release_date}"
-
-
-class AuditLog(models.Model):
-    """AuditLog explanation here"""
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    action = models.CharField(max_length=50)  # e.g., "create", "update", "delete"
-    model_name = models.CharField(max_length=50)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    description = models.TextField()
-
-    class Meta:
-        verbose_name = "Audit Log"
-        verbose_name_plural = 'Audit Logs'
-
-    def __str__(self):
-        return f"{self.action.capitalize()} - {self.model_name} at {self.timestamp}"

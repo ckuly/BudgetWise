@@ -1,63 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
-    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BudgetWise{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        html, body {
-            height: 100%;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-        main {
-            flex: 1;
-        }
-        nav {
-            background-color: #d8eafd; /* Light blue background */
-        }
-        footer {
-            background-color: #d8eafd; /* Light blue background */
-        }
-    </style>
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
 </head>
-<body>
 
+<body>
 <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="{% url 'index' %}"
-           style="font-size: 1.8rem;
-                  font-family: 'Roboto', sans-serif;
-                  color: #ffffff; /* White text for contrast */
-                  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-                  letter-spacing: 0.5px;">
-            Budget<span style="font-weight: 900; color: #ffcc00;">Wise</span>
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">
+            Budget<span>Wise</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">Home</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
                 {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'analytics' %}">Analytics</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'analytics' %}">Analytics</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <svg class="bi bi-person" width="1.5em" height="1.5em" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10z"/>
-                            <path fill-rule="evenodd" d="M8 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0z" clip-rule="evenodd"/>
-                        </svg>
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Profile
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
@@ -70,63 +42,103 @@
                     </ul>
                 </li>
                 {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'contacts' %}">Contacts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'updates' %}">Updates</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'membership' %}">Membership</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'contacts' %}">Contacts</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'updates' %}">Updates</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'membership' %}">Membership</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<main class="container mt-4">
+<main class="container">
     {% block content %}
-    <div class="row">
-        <div class="col-lg-6">
-            <h2>Welcome to BudgetWise!</h2>
-            <p>BudgetWise is your one-stop solution for managing your personal finances. Whether you're looking to track your spending, set savings goals, or analyze your budget, BudgetWise provides you with the tools you need to make informed financial decisions.</p>
+    <div class="text-center mb-5">
+        <h2 class="mb-4">Welcome to BudgetWise!</h2>
+        <p class="lead">
+            Your all-in-one solution for managing personal finances, achieving savings goals, and gaining valuable
+            insights into your spending habits.
+        </p>
+        <p>
+            Whether you're just starting your financial journey or looking for advanced tools to fine-tune your budget,
+            BudgetWise has you covered.
+        </p>
+    </div>
+
+    <div class="mt-4">
+        <h3 class="text-center mb-4">Our Membership Plans</h3>
+        <div class="row">
+            <!-- Free Plan -->
+            <div class="col-md-4 text-center">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h4 class="mb-0">Free Plan</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Perfect for individuals starting their financial journey.</p>
+                        <ul class="list-unstyled">
+                            <li>Basic Budget Tracking</li>
+                            <li>Set up to 3 Savings Goals</li>
+                            <li>Monthly Analytics</li>
+                        </ul>
+                        <h5 class="mt-3">$0 / month</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Plan -->
+            <div class="col-md-4 text-center">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Premium Plan</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">For users seeking advanced financial tools and insights.</p>
+                        <ul class="list-unstyled">
+                            <li>Unlimited Budget Tracking</li>
+                            <li>Customizable Savings Goals</li>
+                            <li>Detailed Weekly & Monthly Analytics</li>
+                            <li>Priority Support</li>
+                        </ul>
+                        <h5 class="mt-3">$7.99 / month</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ultimate Plan -->
+            <div class="col-md-4 text-center">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">Ultimate Plan</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Best for professionals and families managing complex finances.</p>
+                        <ul class="list-unstyled">
+                            <li>Everything in Premium</li>
+                            <li>Multi-user Account Sharing</li>
+                            <li>Advanced AI-Powered Analytics</li>
+                            <li>Dedicated Financial Advisor</li>
+                        </ul>
+                        <h5 class="mt-3">$12.99 / month</h5>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="mt-4">
-        <h3>Key Features:</h3>
-        <ul>
-            <li><strong>Track Transactions:</strong> Keep a record of your daily expenses and income with a detailed transaction list.</li>
-            <li><strong>Manage Budgets:</strong> Set and manage budgets across multiple categories to keep your finances on track.</li>
-            <li><strong>Savings Goals:</strong> Create savings goals to ensure you're saving for future expenses, with progress tracking.</li>
-            <li><strong>Analytics & Reports:</strong> Gain insights into your spending patterns and financial trends with powerful analytics tools.</li>
-            <li><strong>Notifications & Alerts:</strong> Stay updated with automatic notifications about your budget status, goals, and more.</li>
-        </ul>
-    </div>
-
-    <div class="mt-4">
-        <h3>Why Choose BudgetWise?</h3>
-        <p>BudgetWise simplifies financial management with a user-friendly interface and powerful features. Whether you're a beginner trying to manage your first budget or an experienced investor tracking multiple financial goals, BudgetWise has everything you need to stay organized and in control of your finances.</p>
-    </div>
-
-    <div class="mt-4 text-center">
-        <a href="{% url 'register' %}" class="btn btn-primary">Get Started Today</a>
+    <div class="text-center mt-5">
+        <p class="lead">Ready to take control of your finances?</p>
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Started</a>
     </div>
     {% endblock %}
 </main>
 
-<footer class="py-3">
-    <div class="container text-center">
-        <p>© 2024 BudgetWise. All rights reserved.</p>
-        <p>This is the {{ num_visits }}th time you have visited.</p>
-    </div>
+
+<footer>
+    <p>© 2025 BudgetWise. All rights reserved.</p>
+    <p>This is your {{ num_visits }}th visit to BudgetWise.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
