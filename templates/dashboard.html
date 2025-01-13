@@ -6,11 +6,13 @@
 <div class="container mt-4">
     <h2 class="mb-4">Welcome to Your Dashboard, {{ user.username }}!</h2>
 
+    <!-- Recent Transactions -->
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Transactions</h5>
+                    <a href="#" class="btn btn-light btn-sm">Add Transaction</a>
                 </div>
                 <div class="card-body">
                     {% if transactions.exists %}
@@ -32,10 +34,12 @@
             </div>
         </div>
 
+        <!-- Savings Goals -->
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Savings Goals</h5>
+                    <a href="#" class="btn btn-light btn-sm">Add Goal</a>
                 </div>
                 <div class="card-body">
                     {% if savings_goals.exists %}
@@ -60,11 +64,13 @@
         </div>
     </div>
 
+    <!-- Budgets Overview -->
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Budgets Overview</h5>
+                    <a href="#" class="btn btn-light btn-sm">Add Budget</a>
                 </div>
                 <div class="card-body">
                     {% if budgets.exists %}
@@ -84,10 +90,12 @@
             </div>
         </div>
 
+        <!-- Notifications -->
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Notifications</h5>
+                    <a href="#" class="btn btn-light btn-sm">Mark All as Read</a>
                 </div>
                 <div class="card-body">
                     {% if notifications.exists %}

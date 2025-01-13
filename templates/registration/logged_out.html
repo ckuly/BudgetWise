@@ -1,6 +1,24 @@
 {% extends "index.html" %}
+{% load static %}
+
+{% block title %}Logged Out{% endblock %}
 
 {% block content %}
-  <p>Sėkmingai atsijungėte!</p>  
-  <a href="{% url 'login'%}">Prisijungti iš naujo.</a>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm text-center">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Logged Out</h3>
+                </div>
+                <div class="card-body">
+                    <p class="fs-5">You have successfully logged out!</p>
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg mt-3">Log In Again</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

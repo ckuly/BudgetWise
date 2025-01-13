@@ -1,5 +1,80 @@
 {% extends "index.html" %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
 
 {% block content %}
-<h3>Profile</h3>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Profile</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Profile Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
+                        {% csrf_token %}
+
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="150" height="150">
+                        </div>
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Change Profile Picture</label>
+                            <input type="file" id="profile_picture" name="profile_picture" class="form-control">
+                        </div>
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" id="username" name="username" class="form-control"
+                                   value="{{ user.username }}" readonly>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" name="email" class="form-control"
+                                   value="{{ user.email }}" readonly>
+                        </div>
+
+                        <!-- Currency -->
+                        <div class="mb-3">
+                            <label for="currency" class="form-label">Currency</label>
+                            <select id="currency" name="currency" class="form-select">
+                                {% for code, name in user.profile.CURRENCIES %}
+                                    <option value="{{ code }}"
+                                        {% if user.profile.currency == code %}selected{% endif %}>
+                                        {{ name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Timezone -->
+                        <div class="mb-3">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <input type="text" id="timezone" name="timezone" class="form-control"
+                                   value="{{ user.profile.timezone }}">
+                        </div>
+
+                        <!-- Created At -->
+                        <div class="mb-3">
+                            <label class="form-label">Account Created At</label>
+                            <input type="text" class="form-control"
+                                   value="{{ user.profile.created_at|date:'M d, Y H:i' }}" readonly>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

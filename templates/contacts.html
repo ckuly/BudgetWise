@@ -5,29 +5,25 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center mb-4">Contact Us</h1>
-    <p class="text-center">We'd love to hear from you! Whether you have questions, feedback, or need support, feel free to get in touch with us.</p>
+    <p class="text-center">We'd love to hear from you! Whether you have questions, feedback, or need support, feel free to reach out.</p>
 
     <div class="row mt-4">
         <div class="col-md-6 mb-4">
             <h3>Our Contact Details</h3>
             <ul class="list-unstyled">
-                <li><strong>Email:</strong> support@budgetwise.com</li>
-                <li><strong>Phone:</strong> +1 (123) 456-7890</li>
-                <li><strong>Address:</strong> 123 Finance Street, Budget City, BW 45678</li>
+                <li><strong>Email:</strong> <a href="mailto:kyukarago@gmail.com" class="text-primary">kyukarago@gmail.com</a></li>
             </ul>
             <p>Follow us on:</p>
             <ul class="list-inline">
-                <li class="list-inline-item"><a href="#" class="text-primary">Facebook</a></li>
-                <li class="list-inline-item"><a href="#" class="text-info">Twitter</a></li>
-                <li class="list-inline-item"><a href="#" class="text-danger">Instagram</a></li>
-                <li class="list-inline-item"><a href="#" class="text-secondary">LinkedIn</a></li>
+                <li class="list-inline-item"><a href="https://github.com/Sourpips" class="text-dark">GitHub</a></li>
+                <li class="list-inline-item"><a href="https://twitter.com/sourpips" class="text-info">@sourpips</a></li>
             </ul>
         </div>
 
         <!-- Contact Form -->
         <div class="col-md-6">
             <h3>Send Us a Message</h3>
-            <form method="post" action="#>
+            <form method="post" action="#">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="name" class="form-label">Your Name</label>

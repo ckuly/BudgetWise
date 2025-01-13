@@ -79,8 +79,30 @@ def login(request):
     return render(request, "registration/login.html", context)
 
 
+@login_required
 def profile(request):
-    context = {}
+    """View and update user profile."""
+    if request.method == "POST":
+        # Get the user's profile
+        profile = request.user.profile
+
+        # Update profile fields
+        profile.currency = request.POST.get("currency", profile.currency)
+        profile.timezone = request.POST.get("timezone", profile.timezone)
+
+        # Update profile picture if provided
+        if 'profile_picture' in request.FILES:
+            profile.profile_picture = request.FILES['profile_picture']
+
+        # Save changes
+        profile.save()
+
+        messages.success(request, "Profile updated successfully!")
+        return redirect("profile")
+
+    context = {
+        "user": request.user,
+    }
     return render(request, "profile.html", context)
 
 

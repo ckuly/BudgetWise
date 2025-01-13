@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import path, include
 from budgetwise import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 handler404 = views.error_404
 handler500 = views.error_500
@@ -27,4 +29,4 @@ urlpatterns = [
     path('home/', include('budgetwise.urls')),
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
