@@ -60,5 +60,35 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Transaction Details ({{ selected_year }})</h5>
+                </div>
+                <div class="card-body">
+                    {% for month_data in transactions_by_month %}
+                        <h6 class="mt-4">{{ month_data.month }}</h6>
+                        {% if month_data.transactions %}
+                            <ul class="list-group">
+                                {% for transaction in month_data.transactions %}
+                                    <li class="list-group-item">
+                                        <strong>{{ transaction.category.name }}:</strong> {{ transaction.description }} <br>
+                                        <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ transaction.amount }} {{ user.profile.currency }}
+                                        </span>
+                                        <span class="text-muted float-end">{{ transaction.date }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">No transactions for this month.</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -7,9 +7,7 @@
 <div class="container mt-5">
     <p class="text-center text-muted mb-5">Select a plan that works best for you and unlock exclusive features!</p>
 
-    <!-- Membership Plans -->
     <div class="row justify-content-center">
-        <!-- Free Plan -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-light text-center">
@@ -23,15 +21,15 @@
                         <li>Community Support</li>
                     </ul>
                     {% if user.profile.plan == 'free' %}
-                        <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
+                    <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
                     {% else %}
-                        <a href="{% url 'change_plan' 'free' %}" class="btn btn-outline-primary btn-lg w-100">Choose Free</a>
+                    <a href="{% url 'change_plan' 'free' %}" class="btn btn-outline-primary btn-lg w-100">Choose
+                        Free</a>
                     {% endif %}
                 </div>
             </div>
         </div>
 
-        <!-- Premium Plan -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center">
@@ -45,15 +43,14 @@
                         <li>Access to Analytics</li>
                     </ul>
                     {% if user.profile.plan == 'premium' %}
-                        <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
+                    <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
                     {% else %}
-                        <a href="{% url 'change_plan' 'premium' %}" class="btn btn-primary btn-lg w-100">Choose Premium</a>
+                    <a href="{% url 'change_plan' 'premium' %}" class="btn btn-primary btn-lg w-100">Choose Premium</a>
                     {% endif %}
                 </div>
             </div>
         </div>
 
-        <!-- Elite Plan -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-warning text-dark text-center">
@@ -67,18 +64,17 @@
                         <li>Early Access to Updates</li>
                     </ul>
                     {% if user.profile.plan == 'elite' %}
-                        <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
+                    <button class="btn btn-secondary btn-lg w-100" disabled>Current Plan</button>
                     {% else %}
-                        <a href="{% url 'change_plan' 'elite' %}" class="btn btn-warning btn-lg w-100 text-dark">Choose Elite</a>
+                    <a href="{% url 'change_plan' 'elite' %}" class="btn btn-warning btn-lg w-100 text-dark">Choose
+                        Elite</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Points Packages -->
     <div class="row justify-content-center">
-        <!-- 5 EUR Package -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-light text-center">
@@ -95,7 +91,6 @@
             </div>
         </div>
 
-        <!-- 10 EUR Package -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center">
@@ -112,7 +107,6 @@
             </div>
         </div>
 
-        <!-- 20 EUR Package -->
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-warning text-dark text-center">

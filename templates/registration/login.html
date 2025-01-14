@@ -13,14 +13,12 @@
                     <h3 class="mb-0">Login</h3>
                 </div>
                 <div class="card-body">
-                    <!-- Error Message -->
                     {% if form.errors %}
                         <div class="alert alert-danger" role="alert">
                             Login failed, please try again.
                         </div>
                     {% endif %}
 
-                    <!-- Permission Message -->
                     {% if next %}
                         {% if user.is_authenticated %}
                             <div class="alert alert-warning" role="alert">
@@ -29,32 +27,26 @@
                         {% endif %}
                     {% endif %}
 
-                    <!-- Login Form -->
                     <form method="post" action="{% url 'login' %}">
                         {% csrf_token %}
 
-                        <!-- Username -->
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             {{ form.username }}
                         </div>
 
-                        <!-- Password -->
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             {{ form.password }}
                         </div>
 
-                        <!-- Hidden Next Field -->
                         <input type="hidden" name="next" value="{{ next }}" />
 
-                        <!-- Submit Button -->
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">Login</button>
                         </div>
                     </form>
 
-                    <!-- Forgot Password -->
                     <div class="mt-3 text-center">
                         <p><a href="{% url 'password_reset' %}" class="text-primary"><strong>Forgot your password?</strong></a></p>
                     </div>

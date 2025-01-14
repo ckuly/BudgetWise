@@ -5,7 +5,6 @@
 
 {% block content %}
 <div class="container mt-4">
-
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -16,7 +15,6 @@
                     <form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
                         {% csrf_token %}
 
-                        <!-- Profile Picture -->
                         <div class="text-center mb-4">
                             <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="150" height="150">
                         </div>
@@ -24,28 +22,23 @@
                             <label for="profile_picture" class="form-label">Change Profile Picture</label>
                             <input type="file" id="profile_picture" name="profile_picture" class="form-control">
                         </div>
-
-                        <!-- Remove Profile Picture -->
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="remove_picture" name="remove_picture">
                             <label class="form-check-label" for="remove_picture">Remove Profile Picture</label>
                         </div>
 
-                        <!-- Username -->
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" id="username" name="username" class="form-control text-muted"
                                    value="{{ user.username }}" readonly>
                         </div>
 
-                        <!-- Email -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" id="email" name="email" class="form-control text-muted"
                                    value="{{ user.email }}" readonly>
                         </div>
 
-                        <!-- Currency -->
                         <div class="mb-3">
                             <label for="currency" class="form-label">Currency</label>
                             <select id="currency" name="currency" class="form-select">
@@ -58,28 +51,35 @@
                             </select>
                         </div>
 
-                        <!-- Timezone -->
                         <div class="mb-3">
                             <label for="timezone" class="form-label">Timezone</label>
                             <input type="text" id="timezone" name="timezone" class="form-control"
                                    value="{{ user.profile.timezone }}">
                         </div>
 
-                        <!-- Current Plan -->
                         <div class="mb-3">
                             <label class="form-label">Current Plan</label>
                             <input type="text" class="form-control text-muted"
                                    value="{{ user.profile.get_plan_display }}" readonly>
+                            <a href="{% url 'membership' %}" class="btn btn-link mt-2">Change Plan</a>
                         </div>
 
-                        <!-- Created At -->
                         <div class="mb-3">
                             <label class="form-label">Account Created At</label>
                             <input type="text" class="form-control text-muted"
                                    value="{{ user.profile.created_at|date:'M d, Y H:i' }}" readonly>
                         </div>
 
-                        <!-- Submit Button -->
+                        <div class="mb-3">
+                            <label class="form-label">Last Login</label>
+                            <input type="text" class="form-control text-muted"
+                                   value="{{ user.last_login|date:'M d, Y H:i' }}" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <a href="{% url 'password_change' %}" class="btn btn-link">Change Password</a>
+                        </div>
+
                         <div class="text-end">
                             <button type="submit" class="btn btn-success">Update Profile</button>
                         </div>

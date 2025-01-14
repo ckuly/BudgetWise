@@ -73,7 +73,7 @@ class SavingsGoal(models.Model):
 
     @property
     def progress_percentage(self):
-        return round((self.saved_amount / self.target_amount) * 100, 2) if self.target_amount > 0 else 0
+        return round((self.saved_amount / self.target_amount) * 100, 2) if self.target_amount > 0 else 0 # NOQA
 
     class Meta:
         verbose_name = "Saving Goal"

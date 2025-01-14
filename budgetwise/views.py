@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update, Profile
@@ -12,7 +14,6 @@ import calendar
 from django.utils.timezone import now
 
 matplotlib.use('Agg')
-
 
 def index(request):
     transactions = Transaction.objects.all()  # NOQA
@@ -193,26 +194,33 @@ def analytics(request):
 
     monthly_chart, monthly_net_data = generate_monthly_chart(user, selected_year)
 
-    years = Transaction.objects.filter(user=user).dates('date', 'year')  # NOQA
+    years = Transaction.objects.filter(user=user).dates('date', 'year')
+
+    transactions = Transaction.objects.filter(user=user, date__year=selected_year).order_by('date')
+    transactions_by_month = []
+    for month in range(1, 13):
+        month_transactions = transactions.filter(date__month=month)
+        month_name = calendar.month_name[month]
+        transactions_by_month.append({
+            "month": month_name,
+            "transactions": month_transactions,
+        })
 
     context = {
         'monthly_chart': monthly_chart,
         'monthly_net_data': monthly_net_data,
         'selected_year': selected_year,
         'years': [year.year for year in years],
+        'transactions_by_month': transactions_by_month,  # Include detailed transactions
     }
     return render(request, "base/analytics.html", context)
+
 
 
 @login_required
 def membership(request):
     """Display membership plans."""
     return render(request, "base/membership.html")
-
-
-def newsletter(request):
-    context = {}
-    return render(request, "base/newsletter.html", context)
 
 
 def error_404(request, exception=None):  # NOQA
