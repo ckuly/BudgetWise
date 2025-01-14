@@ -12,5 +12,6 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('membership/', views.membership, name='membership'),
     path('change_plan/<str:plan>/', views.change_plan, name='change_plan'),
-    path('add-transaction/', views.add_transaction, name='add_transaction'),
+    path('transactions/add-transaction/', views.add_transaction, name='add_transaction'),
+    path('transactions/manage/<int:transaction_id>/', views.transaction_manage, name='transaction_manage'),
 ]

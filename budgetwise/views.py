@@ -1,8 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth.views import PasswordChangeView
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update, Profile, Category, ContactMessage
@@ -47,7 +45,7 @@ def contacts(request):
         email = request.POST.get("email")
         message = request.POST.get("message")
 
-        ContactMessage.objects.create(name=name, email=email, message=message)
+        ContactMessage.objects.create(name=name, email=email, message=message) # NOQA
         messages.success(request, "Your message has been received. We will get back to you soon!")
 
     return render(request, "base/contacts.html")
@@ -201,9 +199,9 @@ def analytics(request):
 
     monthly_chart, monthly_net_data = generate_monthly_chart(user, selected_year)
 
-    years = Transaction.objects.filter(user=user).dates('date', 'year')
+    years = Transaction.objects.filter(user=user).dates('date', 'year') # NOQA
 
-    transactions = Transaction.objects.filter(user=user, date__year=selected_year).order_by('date')
+    transactions = Transaction.objects.filter(user=user, date__year=selected_year).order_by('date') # NOQA
     transactions_by_month = []
     for month in range(1, 13):
         month_transactions = transactions.filter(date__month=month)
@@ -267,13 +265,13 @@ def add_transaction(request):
             return redirect("add_transaction")
 
         try:
-            category = Category.objects.get(id=category_id)
+            category = Category.objects.get(id=category_id) # NOQA
             amount = float(amount)
-        except (Category.DoesNotExist, ValueError):
+        except (Category.DoesNotExist, ValueError): # NOQA
             messages.error(request, "Invalid category or amount.")
             return redirect("add_transaction")
 
-        Transaction.objects.create(
+        Transaction.objects.create( # NOQA
             user=request.user,
             category=category,
             type=type,
@@ -284,5 +282,51 @@ def add_transaction(request):
         messages.success(request, "Transaction added successfully!")
         return redirect("dashboard")
 
-    categories = Category.objects.all()
+    categories = Category.objects.all() # NOQA
     return render(request, "crud/create_transaction.html", {"categories": categories})
+
+
+@login_required
+def transaction_manage(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+
+    if request.method == 'POST':
+        if 'edit' in request.POST:
+            try:
+                transaction.category_id = request.POST['category']
+
+                amount = request.POST.get('amount', '0')
+                if not amount.strip():
+                    amount = '0'
+                transaction.amount = float(amount)
+
+                transaction.description = request.POST['description']
+
+                date = request.POST.get('date')
+                if date:
+                    transaction.date = date
+                else:
+                    raise ValueError("Date is required.")
+
+                transaction.save()
+                messages.success(request, "Transaction updated successfully!")
+                return redirect('dashboard')
+
+            except ValueError as e:
+                messages.error(request, f"Error: {e}")
+                return redirect('transaction_manage', transaction_id=transaction.id)
+            except Exception as e:
+                messages.error(request, f"An unexpected error occurred. Please try again. {e}")
+                return redirect('transaction_manage', transaction_id=transaction.id)
+
+        elif 'delete' in request.POST:
+            transaction.delete()
+            messages.success(request, "Transaction deleted successfully!")
+            return redirect('dashboard')
+
+    context = {
+        'transaction': transaction,
+        'categories': Category.objects.all(), # NOQA
+    }
+    return render(request, 'crud/transaction_manage.html', context)
+
