@@ -4,10 +4,8 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">Welcome to Your Dashboard, {{ user.username }}!</h2>
-
-    <!-- Recent Transactions -->
     <div class="row">
+        <!-- Recent Transactions -->
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -17,7 +15,7 @@
                 <div class="card-body">
                     {% if transactions.exists %}
                         <ul class="list-group">
-                            {% for transaction in transactions|slice:":5" %}
+                            {% for transaction in transactions|slice:":8" %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     {{ transaction.date }} - {{ transaction.category.name }}
                                     <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
@@ -35,37 +33,43 @@
         </div>
 
         <!-- Savings Goals -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Savings Goals</h5>
-                    <a href="#" class="btn btn-light btn-sm">Add Goal</a>
-                </div>
-                <div class="card-body">
-                    {% if savings_goals.exists %}
-                        <ul class="list-group">
-                            {% for goal in savings_goals %}
-                                <li class="list-group-item">
+<div class="col-md-6">
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Savings Goals</h5>
+            <a href="#" class="btn btn-light btn-sm">Add Goal</a>
+        </div>
+        <div class="card-body">
+            {% if savings_goals.exists %}
+                <ul class="list-group">
+                    {% for goal in savings_goals %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
                                     <strong>{{ goal.name }}</strong>
-                                    <div class="progress mt-2">
+                                    <div class="progress mt-2" style="height: 15px;">
                                         <div class="progress-bar bg-info" role="progressbar" style="width: {{ goal.progress_percentage }}%" aria-valuenow="{{ goal.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
                                             {{ goal.progress_percentage|floatformat:2 }}%
                                         </div>
                                     </div>
                                     <small>{{ goal.saved_amount }}/{{ goal.target_amount }} {{ user.profile.currency }}</small>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>No savings goals set up yet.</p>
-                    {% endif %}
-                </div>
-            </div>
+                                </div>
+                                <a href="#" class="btn btn-outline-primary btn-sm ms-2">Manage</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No savings goals set up yet.</p>
+            {% endif %}
         </div>
     </div>
+</div>
 
-    <!-- Budgets Overview -->
+
+    <!-- Budgets Overview and Notifications -->
     <div class="row">
+        <!-- Budgets Overview -->
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
@@ -77,8 +81,11 @@
                         <ul class="list-group">
                             {% for budget in budgets %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    {{ budget.category.name }}
-                                    <span>{{ budget.amount }} {{ user.profile.currency }}</span>
+                                    <div>
+                                        {{ budget.category.name }}
+                                        <small class="d-block">{{ budget.amount }} {{ user.profile.currency }}</small>
+                                    </div>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Manage</a>
                                 </li>
                             {% endfor %}
                         </ul>

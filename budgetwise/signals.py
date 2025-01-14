@@ -6,19 +6,19 @@ from .models import SavingsGoal, Transaction, Profile
 
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_profile(sender, instance, created, **kwargs): # NOQA
     if created:
-        Profile.objects.create(user=instance)
+        Profile.objects.create(user=instance) # NOQA
         print('KWARGS: ', kwargs)
 
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
+def save_user_profile(sender, instance, **kwargs): # NOQA
     instance.profile.save()
 
 
 @receiver(m2m_changed, sender=SavingsGoal.transactions.through)
-def update_savings_goal_saved_amount_on_transaction_change(sender, instance, action, **kwargs):
+def update_savings_goal_saved_amount_on_transaction_change(sender, instance, action, **kwargs): # NOQA
     if action in ['post_add', 'post_remove']:
         instance.refresh_from_db()
         total_saved_amount = instance.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
@@ -29,7 +29,7 @@ def update_savings_goal_saved_amount_on_transaction_change(sender, instance, act
 
 
 @receiver(post_save, sender=Transaction)
-def update_savings_goal_saved_amount_on_transaction_save(sender, instance, created, **kwargs):
+def update_savings_goal_saved_amount_on_transaction_save(sender, instance, created, **kwargs): # NOQA
     if instance.savings_goals.exists():
         for savings_goal in instance.savings_goals.all():
             total_saved_amount = savings_goal.transactions.aggregate(Sum('amount'))['amount__sum'] or 0

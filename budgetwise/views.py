@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update
+from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update, Profile
 import io
 import base64
 import matplotlib.pyplot as plt
@@ -15,20 +15,21 @@ matplotlib.use('Agg')
 
 
 def index(request):
-    transactions = Transaction.objects.all()
-    num_visits = request.session.get("num_visits", 1)
-    request.session["num_visits"] = num_visits + 1
+    transactions = Transaction.objects.all()  # NOQA
+    total_members = User.objects.count()
+    paid_members = Profile.objects.filter(plan__in=["premium", "elite"]).count()  # NOQA
 
     context = {
-        'transactions': transactions,
-        "num_visits": num_visits,
+        "total_members": total_members,
+        "paid_members": paid_members,
+        "transactions": transactions,
     }
 
     return render(request, "index.html", context)
 
 
 def updates(request):
-    all_updates = Update.objects.order_by("-release_date")
+    all_updates = Update.objects.order_by("-release_date")  # NOQA
     latest_update = all_updates.first()
     archived_updates = all_updates[1:]
 
@@ -47,29 +48,24 @@ def contacts(request):
 @csrf_protect
 def register(request):
     if request.method == "POST":
-        # pasiimame reikšmes iš registracijos formos
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
-        # tikriname, ar sutampa slaptažodžiai
         if password == password2:
-            # tikriname, ar neužimtas username
             if User.objects.filter(username=username).exists():
-                messages.error(request, f'Vartotojo vardas {username} užimtas!')
+                messages.error(request, f'The username "{username}" is already taken!')
                 return redirect('register')
             else:
-                # tikriname, ar nėra tokio pat email
                 if User.objects.filter(email=email).exists():
-                    messages.error(request, f'Vartotojas su el. paštu {email} jau užregistruotas!')
+                    messages.error(request, f'A user with the email "{email}" is already registered!')
                     return redirect('register')
                 else:
-                    # jeigu viskas tvarkoje, sukuriame naują vartotoją
                     User.objects.create_user(username=username, email=email, password=password)
-                    messages.info(request, f'Vartotojas {username} užregistruotas!')
+                    messages.info(request, f'User "{username}" has been successfully registered!')
                     return redirect('login')
         else:
-            messages.error(request, 'Slaptažodžiai nesutampa!')
+            messages.error(request, 'Passwords do not match!')
             return redirect('register')
     return render(request, 'base/register.html')
 
@@ -83,23 +79,18 @@ def login(request):
 def profile(request):
     """View and update user profile."""
     if request.method == "POST":
-        # Get the user's profile
-        profile = request.user.profile
+        profile = request.user.profile  # NOQA
 
-        # Check if the user wants to remove the profile picture
         if 'remove_picture' in request.POST:
-            profile.profile_picture.delete(save=False)  # Deletes the file from storage
-            profile.profile_picture = 'profile_pictures/default.jpg'  # Reset to default
+            profile.profile_picture.delete(save=False)  # NOQA
+            profile.profile_picture = 'profile_pictures/default.jpg'
 
-        # Update profile fields
         profile.currency = request.POST.get("currency", profile.currency)
         profile.timezone = request.POST.get("timezone", profile.timezone)
 
-        # Update profile picture if provided
         if 'profile_picture' in request.FILES:
             profile.profile_picture = request.FILES['profile_picture']
 
-        # Save changes
         profile.save()
 
         messages.success(request, "Profile updated successfully!")
@@ -115,10 +106,10 @@ def profile(request):
 def dashboard(request):
     user = request.user
 
-    budgets = Budget.objects.filter(user=user)
-    transactions = Transaction.objects.filter(user=user).order_by('-date')  # Ordered by date
-    savings_goals = SavingsGoal.objects.filter(user=user)
-    notifications = Notification.objects.filter(user=user, is_read=False)
+    budgets = Budget.objects.filter(user=user)  # NOQA
+    transactions = Transaction.objects.filter(user=user).order_by('-date')  # NOQA
+    savings_goals = SavingsGoal.objects.filter(user=user)  # NOQA
+    notifications = Notification.objects.filter(user=user, is_read=False)  # NOQA
 
     context = {
         "budgets": budgets,
@@ -137,7 +128,7 @@ def generate_monthly_chart(user, year):
     expense_data = [0] * 12
     net_data = []
 
-    transactions = Transaction.objects.filter(user=user, date__year=year)
+    transactions = Transaction.objects.filter(user=user, date__year=year)  # NOQA
 
     for transaction in transactions:
         month_index = transaction.date.month - 1
@@ -158,25 +149,23 @@ def generate_monthly_chart(user, year):
     width = 0.4
     x = range(12)
 
-    income_bars = ax.bar(x, income_data, width=width, label='Income', color='#4CAF50', alpha=0.8, edgecolor='black')
+    income_bars = ax.bar(x, income_data, width=width, label='Income', color='#4CAF50', alpha=1.0, edgecolor='#4CAF50')
     expense_bars = ax.bar([i + width for i in x], expense_data, width=width, label='Expense', color='#F44336',
-                          alpha=0.8, edgecolor='black')
+                          alpha=1.0, edgecolor='#F44336')
 
     for bar in income_bars:
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
-                va='bottom', fontsize=10)
+                va='bottom', fontsize=7)
     for bar in expense_bars:
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
-                va='bottom', fontsize=10)
+                va='bottom', fontsize=7)
 
     ax.set_xticks([i + width / 2 for i in x])
-    ax.set_xticklabels(months, rotation=45, ha='right', fontsize=12)
-    ax.set_title(f"Monthly Income and Expenses - {year}", fontsize=16, fontweight='bold', pad=20)
-    ax.set_xlabel("Month", fontsize=14, labelpad=10)
-    ax.set_ylabel("Amount (in your currency)", fontsize=14, labelpad=10)
-    ax.legend(fontsize=12, loc='upper right', frameon=True, edgecolor='black', title='Legend', title_fontsize=12)
-
-    ax.grid(True, which='major', linestyle='--', linewidth=0.5, alpha=0.7)
+    ax.set_xticklabels(months, ha='center', fontsize=8)
+    ax.set_title(f"Monthly Income and Expenses - {year}", fontsize=14, fontweight='bold', pad=20)
+    ax.set_xlabel("Month", fontsize=10, labelpad=10)
+    ax.set_ylabel("Amount", fontsize=10, labelpad=10)
+    ax.legend(fontsize=10, loc='upper right', frameon=True, edgecolor='black')
 
     plt.tight_layout()
 
@@ -204,7 +193,7 @@ def analytics(request):
 
     monthly_chart, monthly_net_data = generate_monthly_chart(user, selected_year)
 
-    years = Transaction.objects.filter(user=user).dates('date', 'year')
+    years = Transaction.objects.filter(user=user).dates('date', 'year')  # NOQA
 
     context = {
         'monthly_chart': monthly_chart,
@@ -226,12 +215,12 @@ def newsletter(request):
     return render(request, "base/newsletter.html", context)
 
 
-def error_404(request, exception=None):
+def error_404(request, exception=None):  # NOQA
     """Render a custom 404 page."""
     return render(request, 'errors/404.html', status=404)
 
 
-def error_500(request, exception=None):
+def error_500(request, exception=None):  # NOQA
     """Render a custom 500 page."""
     return render(request, 'errors/500.html', status=500)
 
@@ -241,7 +230,7 @@ def change_plan(request, plan):
     """Change the user's membership plan."""
     valid_plans = ['free', 'premium', 'elite']
     if plan in valid_plans:
-        profile = request.user.profile
+        profile = request.user.profile  # NOQA
         profile.plan = plan
         profile.save()
         messages.success(request, f"Your plan has been updated to {plan.capitalize()}!")

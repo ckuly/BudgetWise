@@ -5,9 +5,9 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Choose Your Membership Plan</h2>
     <p class="text-center text-muted mb-5">Select a plan that works best for you and unlock exclusive features!</p>
 
+    <!-- Membership Plans -->
     <div class="row justify-content-center">
         <!-- Free Plan -->
         <div class="col-md-4 mb-4">
@@ -16,7 +16,7 @@
                     <h5 class="mb-0">Free</h5>
                 </div>
                 <div class="card-body text-center">
-                    <h3 class="card-title">$0.00<span class="fs-6 text-muted">/mo</span></h3>
+                    <h3 class="card-title">€0.00<span class="fs-6 text-muted">/mo</span></h3>
                     <ul class="list-unstyled mt-3 mb-4">
                         <li>Basic Features</li>
                         <li>Access to Transactions</li>
@@ -38,7 +38,7 @@
                     <h5 class="mb-0">Premium</h5>
                 </div>
                 <div class="card-body text-center">
-                    <h3 class="card-title">$7.99<span class="fs-6 text-muted">/mo</span></h3>
+                    <h3 class="card-title" id="premium-price">€6<span class="fs-6 text-muted">/mo</span></h3>
                     <ul class="list-unstyled mt-3 mb-4">
                         <li>Advanced Features</li>
                         <li>Priority Support</li>
@@ -60,7 +60,7 @@
                     <h5 class="mb-0">Elite</h5>
                 </div>
                 <div class="card-body text-center">
-                    <h3 class="card-title">$12.99<span class="fs-6 text-muted">/mo</span></h3>
+                    <h3 class="card-title" id="elite-price">€13<span class="fs-6 text-muted">/mo</span></h3>
                     <ul class="list-unstyled mt-3 mb-4">
                         <li>All Premium Features</li>
                         <li>1-on-1 Consultation</li>
@@ -71,6 +71,60 @@
                     {% else %}
                         <a href="{% url 'change_plan' 'elite' %}" class="btn btn-warning btn-lg w-100 text-dark">Choose Elite</a>
                     {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Points Packages -->
+    <div class="row justify-content-center">
+        <!-- 5 EUR Package -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light text-center">
+                    <h5 class="mb-0">Starter Pips</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="card-title">€5<span class="fs-6 text-muted">/package</span></h3>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>500 Pips</li>
+                        <li>Perfect for small transactions</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline-primary btn-lg w-100">Buy Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10 EUR Package -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="mb-0">Pro Pips</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="card-title">€10<span class="fs-6 text-muted">/package</span></h3>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>1100 Pips</li>
+                        <li>Ideal for regular users</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-lg w-100">Buy Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 20 EUR Package -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h5 class="mb-0">Elite Pips</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="card-title">€20<span class="fs-6 text-muted">/package</span></h3>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>2400 Pips</li>
+                        <li>Best value for frequent users</li>
+                    </ul>
+                    <a href="#" class="btn btn-warning btn-lg w-100 text-dark">Buy Now</a>
                 </div>
             </div>
         </div>
