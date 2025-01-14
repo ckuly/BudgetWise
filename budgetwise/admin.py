@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Budget, Transaction, SavingsGoal, Profile, Notification, Update
+from .models import Category, Budget, Transaction, SavingsGoal, Profile, Notification, Update, ContactMessage
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -73,6 +73,11 @@ class UpdateAdmin(admin.ModelAdmin):
         ("Release Information", {"fields": ("release_date",)}),
     )
 
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('name', 'email', 'message')
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Budget, BudgetAdmin)

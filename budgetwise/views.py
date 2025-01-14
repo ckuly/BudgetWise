@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update, Profile
+from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update, Profile, Category, ContactMessage
 import io
 import base64
 import matplotlib.pyplot as plt
@@ -42,8 +42,15 @@ def updates(request):
 
 
 def contacts(request):
-    context = {}
-    return render(request, "base/contacts.html", context)
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+
+        ContactMessage.objects.create(name=name, email=email, message=message)
+        messages.success(request, "Your message has been received. We will get back to you soon!")
+
+    return render(request, "base/contacts.html")
 
 
 @csrf_protect
@@ -245,3 +252,37 @@ def change_plan(request, plan):
     else:
         messages.error(request, "Invalid plan selection.")
     return redirect('membership')
+
+@login_required
+def add_transaction(request):
+    if request.method == "POST":
+        category_id = request.POST.get("category")
+        type = request.POST.get("type")
+        amount = request.POST.get("amount")
+        date = request.POST.get("date")
+        description = request.POST.get("description", "")
+
+        if not category_id or not type or not amount or not date:
+            messages.error(request, "All fields except description are required.")
+            return redirect("add_transaction")
+
+        try:
+            category = Category.objects.get(id=category_id)
+            amount = float(amount)
+        except (Category.DoesNotExist, ValueError):
+            messages.error(request, "Invalid category or amount.")
+            return redirect("add_transaction")
+
+        Transaction.objects.create(
+            user=request.user,
+            category=category,
+            type=type,
+            amount=amount,
+            date=date,
+            description=description,
+        )
+        messages.success(request, "Transaction added successfully!")
+        return redirect("dashboard")
+
+    categories = Category.objects.all()
+    return render(request, "crud/create_transaction.html", {"categories": categories})

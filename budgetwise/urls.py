@@ -12,4 +12,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('membership/', views.membership, name='membership'),
     path('change_plan/<str:plan>/', views.change_plan, name='change_plan'),
+    path('add-transaction/', views.add_transaction, name='add_transaction'),
 ]
