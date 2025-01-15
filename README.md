@@ -4,26 +4,8 @@
 
 ---
 
-## Key Features
-
-- **Expense Tracking**: Categorize and manage expenses.
-- **Income Management**: Record and monitor income sources.
-- **Savings Goals**: Set and track progress toward financial targets.
-- **Interactive Dashboard**: Visualize trends with dynamic charts.
-- **Budget Alerts**: Get notified when exceeding predefined budgets.
-- **Reports**: Export financial summaries as PDF/Excel.
-- **Secure Authentication**: Register and log in safely.
-
----
-
 ## Installation
 
-### Prerequisites
-- Python 3.10+
-- pip (Python package manager)
-- Virtual environment (recommended)
-
-### Setup
 1. Clone the repository:
    ```bash
    git clone https://github.com/ckuly/BudgetWise.git
@@ -56,7 +38,6 @@
 1. **Register or Log In**: Create an account or access an existing one.
 2. **Manage Finances**: Add expenses, incomes, and savings goals.
 3. **Visualize Trends**: Use the dashboard to track financial progress.
-4. **Export Reports**: Generate PDF/Excel summaries.
 
 ---
 

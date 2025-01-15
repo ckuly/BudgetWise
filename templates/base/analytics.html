@@ -4,11 +4,10 @@
 
 {% block content %}
 <div class="container mt-4">
-
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Monthly Income and Expenses ({{ selected_year }})</h5>
                     <form method="get" class="d-inline-flex">
                         <select id="year-select" name="year" class="form-select form-select-sm" onchange="this.form.submit()">
@@ -30,7 +29,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Monthly Transcript</h5>
                 </div>
                 <div class="card-body p-2">
@@ -64,7 +63,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-4">
-                <div class="card-header bg-info text-white">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Transaction Details ({{ selected_year }})</h5>
                 </div>
                 <div class="card-body">
@@ -73,12 +72,14 @@
                         {% if month_data.transactions %}
                             <ul class="list-group">
                                 {% for transaction in month_data.transactions %}
-                                    <li class="list-group-item">
-                                        <strong>{{ transaction.category.name }}:</strong> {{ transaction.description }} <br>
-                                        <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-                                            {{ transaction.amount }} {{ user.profile.currency }}
-                                        </span>
-                                        <span class="text-muted float-end">{{ transaction.date }}</span>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ transaction.category.name }}:</strong> {{ transaction.description }} <br>
+                                            <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                                {{ transaction.amount }} {{ user.profile.currency }}
+                                            </span>
+                                        </div>
+                                        <small class="text-muted">{{ transaction.date }}</small>
                                     </li>
                                 {% endfor %}
                             </ul>
