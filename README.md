@@ -44,7 +44,7 @@
 ## Contact
 
 - **Developer**: Dom Paul
-- **Email**: kyuakarago@gmail.com
+- **Email**: kyukarago@gmail.com
 - **GitHub**: [ckuly](https://github.com/ckuly)
 
 ---
