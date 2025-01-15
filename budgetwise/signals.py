@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
-from .models import SavingsGoal, Transaction, Profile, Notification
+from .models import SavingsGoal, Transaction, Profile, Notification, Budget
 
 
 @receiver(post_save, sender=User)
@@ -50,3 +50,4 @@ def notify_goal_reached(sender, instance, action, **kwargs):  # NOQA
                     user=instance.user,
                     message=f"Congratulations! Your savings goal '{instance.name}' has been reached!"
                 )
+
