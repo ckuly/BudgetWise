@@ -78,10 +78,6 @@ class SavingsGoal(models.Model):
     def saved_amount(self):
         return sum(transaction.amount for transaction in self.transactions.all())  # NOQA
 
-    @property
-    def progress_percentage(self):
-        return round((self.saved_amount / self.target_amount) * 100, 2) if self.target_amount > 0 else 0  # NOQA
-
     def has_reached_goal(self):
         return self.saved_amount >= self.target_amount  # NOQA
 

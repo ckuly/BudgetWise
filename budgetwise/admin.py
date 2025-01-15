@@ -52,8 +52,8 @@ class TransactionAdmin(admin.ModelAdmin):
 @admin.register(SavingsGoal)
 class SavingsGoalAdmin(admin.ModelAdmin):
     list_display = (
-        "id", "user", "name", "target_amount", "saved_amount", "progress_percentage", "due_date", "created_at")
-    readonly_fields = ("created_at", "saved_amount", "progress_percentage")
+        "id", "user", "name", "target_amount", "saved_amount", "due_date", "created_at")
+    readonly_fields = ("created_at", "saved_amount")
     list_filter = ("user", "due_date", "created_at")
     search_fields = ("name", "user__username")
     ordering = ("-due_date",)
@@ -66,8 +66,8 @@ class SavingsGoalAdmin(admin.ModelAdmin):
         ("Transactions", {
             "fields": ("transactions",),
         }),
-        ("Progress and Timestamps", {
-            "fields": ("saved_amount", "progress_percentage", "created_at"),
+        ("Timestamps", {
+            "fields": ("saved_amount", "created_at"),
         }),
     )
 
