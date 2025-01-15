@@ -172,4 +172,4 @@ cython_debug/
 
 .idea
 /.idea/
-/budgetwise/migrations
+/budgetwise/migrations/
