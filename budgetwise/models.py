@@ -105,7 +105,6 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     currency = models.CharField(max_length=3, choices=CURRENCIES, default="USD")
-    timezone = models.CharField(max_length=50, default="UTC")
     profile_picture = models.ImageField(upload_to="profile_pictures/", default="profile_pictures/default.png")
     plan = models.CharField(max_length=10, choices=PLANS, default="free")
     created_at = models.DateTimeField(auto_now_add=True)

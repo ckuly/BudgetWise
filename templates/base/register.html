@@ -4,56 +4,43 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center">
-                    <h3 class="mb-0">Registration</h3>
+                    <h3>Register</h3>
                 </div>
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
-
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input name="username" type="text" class="form-control" id="username"
-                                   aria-describedby="usernameHelp" required>
-                            <small id="usernameHelp" class="form-text text-muted">Up to 150 characters.</small>
+                            <input name="username" type="text" class="form-control" id="username" required>
+                            <small class="form-text text-muted">Up to 150 characters.</small>
                         </div>
-
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input name="email" type="email" class="form-control" id="email"
-                                   aria-describedby="emailHelp" required>
-                            <small id="emailHelp" class="form-text text-muted">We will not share your email or send
-                                spam. It will be used to reset your password if needed.</small>
+                            <input name="email" type="email" class="form-control" id="email" required>
+                            <small class="form-text text-muted">Your email will be kept private.</small>
                         </div>
-
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input name="password" type="password" class="form-control" id="password"
-                                   aria-describedby="pwdHelp" required>
-                            <small id="pwdHelp" class="form-text text-muted">At least 8 characters. Cannot consist of
-                                only numbers.</small>
+                            <input name="password" type="password" class="form-control" id="password" required>
+                            <small class="form-text text-muted">At least 8 characters.</small>
                         </div>
-
                         <div class="mb-3">
                             <label for="password2" class="form-label">Confirm Password</label>
-                            <input name="password2" type="password" class="form-control" id="password2"
-                                   aria-describedby="pwd2Help" required>
+                            <input name="password2" type="password" class="form-control" id="password2" required>
                         </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
                     </form>
-
                     <div class="mt-3 text-center">
-                        <p>If you already have an account, <a href="/login" class="text-primary"><strong>log in
-                            here.</strong></a></p>
+                        <p>Already have an account? <a href="{% url 'login' %}" class="text-primary"><strong>Log in</strong></a></p>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

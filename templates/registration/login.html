@@ -4,56 +4,46 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center">
-                    <h3 class="mb-0">Login</h3>
+                    <h3>Login</h3>
                 </div>
                 <div class="card-body">
                     {% if form.errors %}
                         <div class="alert alert-danger" role="alert">
-                            Login failed, please try again.
+                            Invalid credentials. Please try again.
                         </div>
                     {% endif %}
-
-                    {% if next %}
-                        {% if user.is_authenticated %}
-                            <div class="alert alert-warning" role="alert">
-                                You do not have access to this information. Please log in.
-                            </div>
-                        {% endif %}
+                    {% if next and user.is_authenticated %}
+                        <div class="alert alert-warning" role="alert">
+                            You do not have access to this information. Please log in.
+                        </div>
                     {% endif %}
 
                     <form method="post" action="{% url 'login' %}">
                         {% csrf_token %}
-
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            {{ form.username }}
+                            <input name="username" type="text" class="form-control" id="username" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            {{ form.password }}
+                            <input name="password" type="password" class="form-control" id="password" required>
                         </div>
-
-                        <input type="hidden" name="next" value="{{ next }}" />
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Login</button>
-                        </div>
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
 
                     <div class="mt-3 text-center">
                         <p><a href="{% url 'password_reset' %}" class="text-primary"><strong>Forgot your password?</strong></a></p>
+                        <p>Don't have an account? <a href="{% url 'register' %}" class="text-primary"><strong>Register here</strong></a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

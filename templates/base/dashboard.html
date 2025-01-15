@@ -100,7 +100,7 @@
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Notifications</h5>
-                        <a href="#" class="btn btn-light btn-sm">Mark All as Read</a>
+                        <a href="{% url 'mark_all_notifications_as_read' %}" class="btn btn-light btn-sm">Mark All as Read</a>
                     </div>
                     <div class="card-body">
                         {% if notifications.exists %}

@@ -19,4 +19,5 @@ urlpatterns = [
     path('goals/manage/<int:saving_goal_id>/', views.saving_goal_manage, name='saving_goal_manage'),
     path('budgets/add-budget/', views.add_budget, name='add_budget'),
     path('budgets/manage/<int:budget_id>/', views.budget_manage, name='budget_manage'),
+    path('notifications/mark_all_as_read/', views.mark_all_notifications_as_read, name='mark_all_notifications_as_read'),
 ]

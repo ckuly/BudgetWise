@@ -251,10 +251,12 @@ def change_plan(request, plan):
         messages.error(request, "Invalid plan selection.")
     return redirect('membership')
 
+
 @login_required
 def all_transactions(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     return render(request, 'crud/all_transactions.html', {'transactions': transactions})
+
 
 @login_required
 def add_transaction(request):
@@ -391,7 +393,6 @@ def budget_manage(request, budget_id):
     return render(request, "crud/budget_manage.html", {"budget": budget, "categories": categories})
 
 
-
 @login_required
 def saving_goal_manage(request, saving_goal_id):
     saving_goal = get_object_or_404(SavingsGoal, id=saving_goal_id, user=request.user)
@@ -471,3 +472,11 @@ def transaction_manage(request, transaction_id):
         'categories': Category.objects.all(),  # NOQA
     }
     return render(request, 'crud/transaction_manage.html', context)
+
+@login_required
+def mark_all_notifications_as_read(request):
+    """Mark all notifications as read for the current user."""
+    notifications = Notification.objects.filter(user=request.user, is_read=False)
+    notifications.update(is_read=True)
+    messages.success(request, "All notifications marked as read.")
+    return redirect('dashboard')

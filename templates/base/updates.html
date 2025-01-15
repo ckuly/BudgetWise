@@ -1,32 +1,49 @@
 {% extends "index.html" %}
 
-{% block title %}Updates - BudgetWise{% endblock %}
+{% block title %}Updates{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h3 class="text-center mb-4">Featured Updates</h3>
-
-    {% if latest_update %}
-        <div class="featured-update mb-5 p-3 bg-light border rounded">
-            <h2 class="text-primary">{{ latest_update.version }}</h2>
-            <small class="text-muted">Released on {{ latest_update.release_date }}</small>
-            <p class="mt-2">{{ latest_update.description }}</p>
-        </div>
-    {% endif %}
-
-    <h3 class="text-center mt-4">Archived Updates</h3>
-    {% if archived_updates %}
-        <div class="list-group">
-            {% for update in archived_updates %}
-                <div class="list-group-item">
-                    <h5 class="mb-1">{{ update.version }}</h5>
-                    <small class="text-muted">Released on {{ update.release_date }}</small>
-                    <p class="mt-2">{{ update.description }}</p>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>Latest Update</h3>
                 </div>
-            {% endfor %}
+                <div class="card-body">
+                    {% if latest_update %}
+                        <h5 class="text-primary">{{ latest_update.version }}</h5>
+                        <small class="text-muted">Released on {{ latest_update.release_date }}</small>
+                        <p class="mt-3">{{ latest_update.description }}</p>
+                    {% else %}
+                        <p class="text-center text-muted">No updates available.</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    {% else %}
-        <p class="text-center">No archived updates available.</p>
+    </div>
+
+    {% if archived_updates %}
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-secondary text-white text-center">
+                        <h3>Archived Updates</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for update in archived_updates %}
+                                <li class="list-group-item">
+                                    <h6 class="mb-1">{{ update.version }}</h6>
+                                    <small class="text-muted">Released on {{ update.release_date }}</small>
+                                    <p class="mt-2">{{ update.description }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

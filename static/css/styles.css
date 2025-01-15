@@ -10,7 +10,6 @@ body {
     line-height: 1.6;
 }
 
-
 nav {
     position: sticky;
     top: 0;
@@ -25,7 +24,6 @@ nav .navbar-brand {
     font-weight: bold;
     color: #ffffff;
     text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    letter-spacing: 0.5px;
     transition: color 0.3s ease-in-out;
 }
 
@@ -41,8 +39,8 @@ nav .nav-link {
     color: #f0f0f0 !important;
     font-weight: 600;
     padding: 0.5rem 1rem;
-    transition: background-color 0.3s, color 0.3s;
     border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 nav .nav-link:hover {
@@ -50,15 +48,10 @@ nav .nav-link:hover {
     color: #ffd700 !important;
 }
 
-nav .navbar-toggler {
+.navbar-toggler {
     border: none;
     background-color: rgba(255, 255, 255, 0.3);
 }
-
-nav .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
 
 main {
     flex: 1;
@@ -70,16 +63,20 @@ main {
     border-radius: 8px;
 }
 
-
 footer {
     background-color: #004080;
     color: #f0f0f0;
-    padding: 1.5rem 0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding: 1rem 0;
+    border-top: 2px solid #003366;
+}
+
+footer small {
+    font-size: 0.9rem;
 }
 
 footer a {
@@ -93,10 +90,6 @@ footer a:hover {
     color: #ffcc00;
 }
 
-nav .navbar-nav .nav-item {
-    margin: 0 0.5rem;
-}
-
 button,
 .nav-link {
     transition: all 0.3s ease;
@@ -105,10 +98,6 @@ button,
 button:hover,
 .nav-link:hover {
     transform: scale(1.05);
-}
-
-.collapse {
-    transition: height 0.3s ease-in-out;
 }
 
 @media (max-width: 768px) {
