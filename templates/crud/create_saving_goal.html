@@ -22,18 +22,6 @@
             <input type="date" name="due_date" id="due_date" class="form-control">
         </div>
 
-        <div class="form-group mt-3">
-            <label for="transactions">Assign Transactions:</label>
-            <select name="transactions" id="transactions" class="form-control" multiple>
-                {% for transaction in available_transactions %}
-                <option value="{{ transaction.id }}">
-                    {{ transaction.date }} - {{ transaction.amount }} {{ user.profile.currency }} - {{ transaction.category.name }}
-                </option>
-                {% endfor %}
-            </select>
-            <small class="form-text text-muted">Hold down Ctrl (Windows) or Command (Mac) to select multiple transactions.</small>
-        </div>
-
         <button type="submit" class="btn btn-primary mt-4">Add Savings Goal</button>
     </form>
 </div>

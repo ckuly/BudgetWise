@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  # False / True
 
-ALLOWED_HOSTS = []  # "*" or 'localhost', '127.0.0.1', 'www.mysite.com' # NOQA
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'www.mysite.com']  # "*" or 'localhost', '127.0.0.1', 'www.mysite.com' # NOQA
 
 # Application definition
 
@@ -131,5 +131,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_POST = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'mano_pastas@gmail.com'
+EMAIL_HOST_USER = 'support@budgetwise.com'
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

@@ -89,11 +89,11 @@ def profile(request):
         profile = request.user.profile  # NOQA
 
         if 'remove_picture' in request.POST:
-            profile.profile_picture.delete(save=False)  # NOQA
+            if profile.profile_picture.name != 'profile_pictures/default.png':  # NOQA
+                profile.profile_picture.delete(save=False)  # NOQA
             profile.profile_picture = 'profile_pictures/default.png'
 
         profile.currency = request.POST.get("currency", profile.currency)
-        profile.timezone = request.POST.get("timezone", profile.timezone)
 
         if 'profile_picture' in request.FILES:
             profile.profile_picture = request.FILES['profile_picture']
@@ -113,10 +113,10 @@ def profile(request):
 def dashboard(request):
     user = request.user
 
-    budgets = Budget.objects.filter(user=user)  # NOQA
-    transactions = Transaction.objects.filter(user=user).order_by('-date')  # NOQA
-    savings_goals = SavingsGoal.objects.filter(user=user)  # NOQA
-    notifications = Notification.objects.filter(user=user, is_read=False)  # NOQA
+    budgets = Budget.objects.filter(user=user) # NOQA
+    transactions = Transaction.objects.filter(user=user).order_by('-date') # NOQA
+    savings_goals = SavingsGoal.objects.filter(user=user) # NOQA
+    notifications = Notification.objects.filter(user=user, is_read=False) # NOQA
 
     context = {
         "budgets": budgets,
@@ -254,7 +254,7 @@ def change_plan(request, plan):
 
 @login_required
 def all_transactions(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')  # NOQA
     return render(request, 'crud/all_transactions.html', {'transactions': transactions})
 
 
@@ -349,11 +349,11 @@ def add_budget(request):
             amount = float(amount)
             month = int(month)
             year = int(year)
-        except (Category.DoesNotExist, ValueError):
+        except (Category.DoesNotExist, ValueError):  # NOQA
             messages.error(request, "Invalid input.")
             return redirect("add_budget")
 
-        Budget.objects.create(
+        Budget.objects.create(  # NOQA
             user=request.user,
             amount=amount,
             description=description,
@@ -363,7 +363,7 @@ def add_budget(request):
         messages.success(request, "Budget added successfully!")
         return redirect("dashboard")
 
-    categories = Category.objects.all()
+    categories = Category.objects.all()  # NOQA
     return render(request, "crud/create_budget.html", {"categories": categories})
 
 
@@ -389,7 +389,7 @@ def budget_manage(request, budget_id):
             messages.success(request, "Budget deleted successfully!")
             return redirect("dashboard")
 
-    categories = Category.objects.all()
+    categories = Category.objects.all()  # NOQA
     return render(request, "crud/budget_manage.html", {"budget": budget, "categories": categories})
 
 
@@ -401,25 +401,27 @@ def saving_goal_manage(request, saving_goal_id):
         transaction_id = request.POST.get("transaction_id")
         if "assign_transaction" in request.POST:
             try:
-                transaction = Transaction.objects.get(id=transaction_id, user=request.user, type="income")  # NOQA
+                transaction = Transaction.objects.get(id=transaction_id, user=request.user, type="income")
                 saving_goal.transactions.add(transaction)
                 messages.success(request, "Income transaction assigned to savings goal successfully!")
-            except Transaction.DoesNotExist:  # NOQA
+            except Transaction.DoesNotExist:
                 messages.error(request, "Invalid or non-income transaction.")
         elif "remove_transaction" in request.POST:
             try:
-                transaction = Transaction.objects.get(id=transaction_id, user=request.user)  # NOQA
+                transaction = Transaction.objects.get(id=transaction_id, user=request.user)
                 saving_goal.transactions.remove(transaction)
                 messages.success(request, "Transaction removed from savings goal successfully!")
-            except Transaction.DoesNotExist:  # NOQA
+            except Transaction.DoesNotExist:
                 messages.error(request, "Invalid transaction.")
         elif "delete_goal" in request.POST:
             saving_goal.delete()
             messages.success(request, "Savings goal deleted successfully!")
             return redirect("dashboard")
+
+        saving_goal.refresh_from_db()
         return redirect("saving_goal_manage", saving_goal_id=saving_goal.id)
 
-    available_transactions = Transaction.objects.filter(  # NOQA
+    available_transactions = Transaction.objects.filter(
         user=request.user, type="income"
     ).exclude(savings_goals=saving_goal)
 
@@ -473,10 +475,11 @@ def transaction_manage(request, transaction_id):
     }
     return render(request, 'crud/transaction_manage.html', context)
 
+
 @login_required
 def mark_all_notifications_as_read(request):
     """Mark all notifications as read for the current user."""
-    notifications = Notification.objects.filter(user=request.user, is_read=False)
+    notifications = Notification.objects.filter(user=request.user, is_read=False)  # NOQA
     notifications.update(is_read=True)
     messages.success(request, "All notifications marked as read.")
     return redirect('dashboard')
