@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
-from .models import SavingsGoal, Transaction, Profile
+from .models import SavingsGoal, Transaction, Profile, Notification
 
 
 @receiver(post_save, sender=User)
@@ -36,3 +36,17 @@ def update_savings_goal_saved_amount_on_transaction_save(sender, instance, creat
             if savings_goal.saved_amount != total_saved_amount:
                 savings_goal.saved_amount = total_saved_amount
                 savings_goal.save(update_fields=['saved_amount'])
+
+
+@receiver(m2m_changed, sender=SavingsGoal.transactions.through)
+def notify_goal_reached(sender, instance, action, **kwargs):  # NOQA
+    if action == 'post_add':
+        if instance.has_reached_goal():
+            if not Notification.objects.filter(  # NOQA
+                    user=instance.user,
+                    message__icontains=f"Savings goal '{instance.name}' reached"
+            ).exists():
+                Notification.objects.create(  # NOQA
+                    user=instance.user,
+                    message=f"Congratulations! Your savings goal '{instance.name}' has been reached!"
+                )

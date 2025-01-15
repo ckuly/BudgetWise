@@ -11,55 +11,48 @@
                     <h5 class="mb-0">Recent Transactions</h5>
                     <a href="{% url 'add_transaction' %}" class="btn btn-light btn-sm">Add Transaction</a>
                 </div>
-                    <div class="card-body">
-                        {% if transactions.exists %}
-                        <ul class="list-group">
-                            {% for transaction in transactions|slice:":8" %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    {{ transaction.date }} - {{ transaction.category.name }}
-                                    <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-                                        {{ transaction.amount }} {{ user.profile.currency }}
-                                    </span>
-                                </div>
-                                <a href="{% url 'transaction_manage' transaction.id %}" class="btn btn-outline-primary btn-sm">Manage</a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        <a href="#" class="btn btn-link mt-2">View All Transactions</a>
-                        {% else %}
-                        <p>No recent transactions found.</p>
-                        {% endif %}
-                    </div>
+                <div class="card-body">
+                    {% if transactions.exists %}
+                    <ul class="list-group">
+                        {% for transaction in transactions|slice:":4" %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {{ transaction.category.name }}
+                                <small class="d-block">{{ transaction.amount }} {{ user.profile.currency }}</small>
+                                <small class="text-muted">{{ transaction.date }}</small>
+                                <small class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ transaction.type|title }}
+                                </small>
+                            </div>
+                            <a href="{% url 'transaction_manage' transaction.id %}" class="btn btn-outline-primary btn-sm">Manage</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'all_transactions' %}" class="btn btn-link mt-2">View All Transactions</a>
+                    {% else %}
+                    <p>No recent transactions found.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Savings Goals</h5>
-                    <a href="#" class="btn btn-light btn-sm">Add Goal</a>
+                    <a href="{% url 'add_saving_goal' %}" class="btn btn-light btn-sm">Add Goal</a>
                 </div>
                 <div class="card-body">
                     {% if savings_goals.exists %}
                     <ul class="list-group">
-                        {% for goal in savings_goals %}
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{{ goal.name }}</strong>
-                                    <div class="progress mt-2" style="height: 15px;">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                             style="width: {{ goal.progress_percentage }}%"
-                                             aria-valuenow="{{ goal.progress_percentage }}" aria-valuemin="0"
-                                             aria-valuemax="100">
-                                            {{ goal.progress_percentage|floatformat:2 }}%
-                                        </div>
-                                    </div>
-                                    <small>{{ goal.saved_amount }}/{{ goal.target_amount }} {{ user.profile.currency }}</small>
-                                </div>
-                                <a href="#" class="btn btn-outline-primary btn-sm ms-2">Manage</a>
+                        {% for goal in savings_goals|slice:":4" %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {{ goal.name }}
+                                <small class="d-block">Target: {{ goal.target_amount }} {{ user.profile.currency }}</small>
+                                <small class="text-muted">Saved: {{ goal.saved_amount }} {{ user.profile.currency }}</small>
                             </div>
+                            <a href="{% url 'saving_goal_manage' goal.id %}" class="btn btn-outline-primary btn-sm">Manage</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -70,28 +63,32 @@
             </div>
         </div>
 
-
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
-                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Budgets Overview</h5>
-                        <a href="#" class="btn btn-light btn-sm">Add Budget</a>
+                        <a href="{% url 'add_budget' %}" class="btn btn-light btn-sm">Add Budget</a>
                     </div>
                     <div class="card-body">
                         {% if budgets.exists %}
                         <ul class="list-group">
-                            {% for budget in budgets %}
+                            {% for budget in budgets|slice:":4" %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     {{ budget.category.name }}
                                     <small class="d-block">{{ budget.amount }} {{ user.profile.currency }}</small>
+                                    <small class="text-muted">
+                                        Total Transactions: {{ budget.transactions_total }} {{ user.profile.currency }}
+                                    </small>
+                                    {% if budget.is_surpassed %}
+                                    <small class="text-danger">Budget surpassed!</small>
+                                    {% endif %}
                                 </div>
-                                <a href="#" class="btn btn-outline-primary btn-sm">Manage</a>
+                                <a href="{% url 'budget_manage' budget.id %}" class="btn btn-outline-primary btn-sm">Manage</a>
                             </li>
                             {% endfor %}
                         </ul>
-                        <a href="#" class="btn btn-link mt-2">Manage Budgets</a>
                         {% else %}
                         <p>No budgets found.</p>
                         {% endif %}
@@ -101,7 +98,7 @@
 
             <div class="col-md-6">
                 <div class="card mb-4">
-                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Notifications</h5>
                         <a href="#" class="btn btn-light btn-sm">Mark All as Read</a>
                     </div>
@@ -111,8 +108,7 @@
                             {% for notification in notifications %}
                             <li class="list-group-item">
                                 {{ notification.message }}
-                                <small class="text-muted d-block">{{ notification.created_at|date:"M d, Y H:i"
-                                    }}</small>
+                                <small class="text-muted d-block">{{ notification.created_at|date:"M d, Y H:i" }}</small>
                             </li>
                             {% endfor %}
                         </ul>
@@ -124,4 +120,5 @@
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title %}All Transactions{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>All Transactions</h3>
+        <a href="{% url 'add_transaction' %}" class="btn btn-primary">Add Transaction</a>
+    </div>
+    
+    {% if transactions.exists %}
+    <table class="table table-striped table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>#</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ transaction.category.name }}</td>
+                <td>
+                    <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ transaction.type|title }}
+                    </span>
+                </td>
+                <td>{{ transaction.amount }} {{ user.profile.currency }}</td>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.description|default:"N/A" }}</td>
+                <td>
+                    <a href="{% url 'transaction_manage' transaction.id %}" class="btn btn-outline-primary btn-sm">
+                        Manage
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No transactions found. Start by <a href="{% url 'add_transaction' %}">adding a transaction</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

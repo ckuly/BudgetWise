@@ -1,0 +1,55 @@
+{% extends "index.html" %}
+{% block title %}Manage Saving Goal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Manage Savings Goal</h2>
+    <p><strong>Goal Name:</strong> {{ saving_goal.name }}</p>
+    <p><strong>Target Amount:</strong> {{ saving_goal.target_amount }} {{ user.profile.currency }}</p>
+    <p><strong>Saved Amount:</strong> {{ saving_goal.saved_amount }} {{ user.profile.currency }}</p>
+    <p><strong>Due Date:</strong> {{ saving_goal.due_date }}</p>
+
+    <form method="POST" style="margin: 0;">
+        {% csrf_token %}
+        <button type="submit" name="delete_goal" class="btn btn-danger">Delete Goal</button>
+    </form>
+
+    <h3 class="mt-4">Assigned Transactions</h3>
+    {% if saving_goal.transactions.exists %}
+    <ul class="list-group">
+        {% for transaction in saving_goal.transactions.all %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ transaction.date }} - {{ transaction.amount }} {{ user.profile.currency }}
+            <span class="text-muted">Category: {{ transaction.category.name }}</span>
+            <form method="POST" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+                <button type="submit" name="remove_transaction" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No transactions assigned to this goal yet.</p>
+    {% endif %}
+
+    <h3 class="mt-4">Assign New Transactions (Income Only)</h3>
+    {% if available_transactions.exists %}
+    <ul class="list-group">
+        {% for transaction in available_transactions %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ transaction.date }} - {{ transaction.amount }} {{ user.profile.currency }}
+            <span class="text-muted">Category: {{ transaction.category.name }}</span>
+            <form method="POST" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+                <button type="submit" name="assign_transaction" class="btn btn-success btn-sm">Assign</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No available income transactions to assign.</p>
+    {% endif %}
+</div>
+{% endblock %}

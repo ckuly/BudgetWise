@@ -1,0 +1,45 @@
+{% extends "index.html" %}
+{% block title %}Manage Budget{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Manage Budget</h2>
+        <form method="POST">
+        {% csrf_token %}
+        <div class="form-group mt-3">
+            <label for="amount">Amount:</label>
+            <input type="number" name="amount" id="amount" class="form-control" step="0.01" value="{{ budget.amount }}" required>
+        </div>
+        <div class="form-group mt-3">
+            <label for="month">Month:</label>
+            <input type="number" name="month" id="month" class="form-control" min="1" max="12" value="{{ budget.month }}" required>
+        </div>
+        <div class="form-group mt-3">
+            <label for="year">Year:</label>
+            <input type="number" name="year" id="year" class="form-control" min="2000" max="2100" value="{{ budget.year }}" required>
+        </div>
+        <div class="form-group mt-3">
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" class="form-control">{{ budget.description }}</textarea>
+        </div>
+        <button type="submit" name="edit" class="btn btn-primary mt-4">Save Changes</button>
+        <button type="submit" name="delete" class="btn btn-danger mt-4">Delete Budget</button>
+    </form>
+
+
+    <h3 class="mt-5">Budget Details</h3>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Amount:</strong> {{ budget.amount }} {{ user.profile.currency }}</li>
+        <li class="list-group-item"><strong>Month:</strong> {{ budget.month }}</li>
+        <li class="list-group-item"><strong>Year:</strong> {{ budget.year }}</li>
+        <li class="list-group-item">
+            <strong>Total Transactions:</strong> {{ budget.transactions_total }} {{ user.profile.currency }}
+            {% if budget.is_surpassed %}
+            <span class="text-danger">(Budget Surpassed!)</span>
+            {% endif %}
+        </li>
+        <li class="list-group-item"><strong>Created At:</strong> {{ budget.created_at|date:"M d, Y H:i" }}</li>
+        <li class="list-group-item"><strong>Last Updated:</strong> {{ budget.updated_at|date:"M d, Y H:i" }}</li>
+    </ul>
+</div>
+{% endblock %}

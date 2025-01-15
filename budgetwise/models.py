@@ -3,7 +3,6 @@ from django.db import models
 
 
 class Category(models.Model):
-    """Categories explanation here"""
     name = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -16,30 +15,36 @@ class Category(models.Model):
 
 
 class Budget(models.Model):
-    """Budgets explanation here"""
-    CATEGORY_TYPES = (
-        ("income", "Income"),
-        ("expense", "Expense"),
-    )
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    type = models.CharField(max_length=10, choices=CATEGORY_TYPES, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True, null=True)
+    month = models.PositiveSmallIntegerField(default=1)
+    year = models.PositiveSmallIntegerField(default=2004)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def transactions_total(self):
+        return Transaction.objects.filter(
+            user=self.user,
+            type="expense",
+            date__year=self.year,
+            date__month=self.month
+        ).aggregate(total=models.Sum('amount'))['total'] or 0
+
+    @property
+    def is_surpassed(self):
+        return self.transactions_total > self.amount
 
     class Meta:
         verbose_name = "Budget"
         verbose_name_plural = "Budgets"
 
     def __str__(self):
-        return f"{self.category.name} - {self.amount}"
+        return f"Budget - {self.amount} ({self.month}/{self.year})"
 
 
 class Transaction(models.Model):
-    """Transaction explanation here"""
     TRANSACTION_TYPES = (
         ('income', 'Income'),
         ('expense', 'Expense'),
@@ -58,22 +63,27 @@ class Transaction(models.Model):
         verbose_name_plural = "Transactions"
 
     def __str__(self):
-        return f"{self.type.capitalize()} - {self.amount} ({self.category.name})" # NOQA
+        return f"{self.type.capitalize()} - {self.amount} ({self.category.name})"  # NOQA
 
 
 class SavingsGoal(models.Model):
-    """Saving goals explanation here"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    transactions = models.ManyToManyField(Transaction, related_name='savings_goals', blank=True)
     target_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    saved_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     due_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    transactions = models.ManyToManyField(Transaction, related_name='savings_goals', blank=True)
+
+    @property
+    def saved_amount(self):
+        return sum(transaction.amount for transaction in self.transactions.all())  # NOQA
 
     @property
     def progress_percentage(self):
-        return round((self.saved_amount / self.target_amount) * 100, 2) if self.target_amount > 0 else 0 # NOQA
+        return round((self.saved_amount / self.target_amount) * 100, 2) if self.target_amount > 0 else 0  # NOQA
+
+    def has_reached_goal(self):
+        return self.saved_amount >= self.target_amount  # NOQA
 
     class Meta:
         verbose_name = "Saving Goal"
@@ -84,7 +94,6 @@ class SavingsGoal(models.Model):
 
 
 class Profile(models.Model):
-    """Profile explanation here"""
     CURRENCIES = [
         ("USD", "Dollar"),
         ("EUR", "Euro"),
@@ -101,7 +110,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     currency = models.CharField(max_length=3, choices=CURRENCIES, default="USD")
     timezone = models.CharField(max_length=50, default="UTC")
-    profile_picture = models.ImageField(upload_to="profile_pictures/", default="profile_pictures/default.jpg")
+    profile_picture = models.ImageField(upload_to="profile_pictures/", default="profile_pictures/default.png")
     plan = models.CharField(max_length=10, choices=PLANS, default="free")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -110,11 +119,10 @@ class Profile(models.Model):
         verbose_name_plural = "Profiles"
 
     def __str__(self):
-        return f"Profile of {self.user.username}" # NOQA
+        return f"Profile of {self.user.username}"  # NOQA
 
 
 class Notification(models.Model):
-    """Notification explanation here"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
     is_read = models.BooleanField(default=False)
@@ -125,11 +133,10 @@ class Notification(models.Model):
         verbose_name_plural = "Notifications"
 
     def __str__(self):
-        return f"Notification for {self.user.username}: {self.message[:50]}" # NOQA
+        return f"Notification for {self.user.username}: {self.message[:50]}"  # NOQA
 
 
 class Update(models.Model):
-    """Update explanation here"""
     version = models.CharField(max_length=20, help_text="Version number (e.g., v1.0.0)")
     description = models.TextField(help_text="Description of the update")
     release_date = models.DateField(help_text="Release date of the update")
@@ -140,6 +147,7 @@ class Update(models.Model):
 
     def __str__(self):
         return f"{self.version} - {self.release_date}"
+
 
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
