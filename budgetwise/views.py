@@ -1,17 +1,14 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
+from django.views.generic import CreateView, ListView
 from budgetwise.models import Transaction, Budget, SavingsGoal, Notification, Update, Profile, Category, ContactMessage
-import io
-import base64
-import matplotlib.pyplot as plt
-import matplotlib
 import calendar
 from django.utils.timezone import now
-
-matplotlib.use('Agg')
+from .utils import generate_monthly_chart
 
 
 def index(request):
@@ -84,7 +81,6 @@ def login(request):
 
 @login_required
 def profile(request):
-    """View and update user profile."""
     if request.method == "POST":
         profile = request.user.profile  # NOQA
 
@@ -113,10 +109,10 @@ def profile(request):
 def dashboard(request):
     user = request.user
 
-    budgets = Budget.objects.filter(user=user) # NOQA
-    transactions = Transaction.objects.filter(user=user).order_by('-date') # NOQA
-    savings_goals = SavingsGoal.objects.filter(user=user) # NOQA
-    notifications = Notification.objects.filter(user=user, is_read=False) # NOQA
+    budgets = Budget.objects.filter(user=user)  # NOQA
+    transactions = Transaction.objects.filter(user=user).order_by('-date')  # NOQA
+    savings_goals = SavingsGoal.objects.filter(user=user)  # NOQA
+    notifications = Notification.objects.filter(user=user, is_read=False)  # NOQA
 
     context = {
         "budgets": budgets,
@@ -129,88 +125,29 @@ def dashboard(request):
     return render(request, "base/dashboard.html", context)
 
 
-def generate_monthly_chart(user, year):
-    months = list(calendar.month_name)[1:]
-    income_data = [0] * 12
-    expense_data = [0] * 12
-    net_data = []
-
-    transactions = Transaction.objects.filter(user=user, date__year=year)  # NOQA
-
-    for transaction in transactions:
-        month_index = transaction.date.month - 1
-        if transaction.type == 'income':
-            income_data[month_index] += transaction.amount
-        elif transaction.type == 'expense':
-            expense_data[month_index] += transaction.amount
-
-    for i in range(12):
-        net_data.append({
-            "month": months[i],
-            "income": income_data[i],
-            "expense": expense_data[i],
-            "net": income_data[i] - expense_data[i],
-        })
-
-    fig, ax = plt.subplots(figsize=(11, 5))
-    width = 0.4
-    x = range(12)
-
-    income_bars = ax.bar(x, income_data, width=width, label='Income', color='#4CAF50', alpha=1.0, edgecolor='#4CAF50')
-    expense_bars = ax.bar([i + width for i in x], expense_data, width=width, label='Expense', color='#F44336',
-                          alpha=1.0, edgecolor='#F44336')
-
-    for bar in income_bars:
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
-                va='bottom', fontsize=7)
-    for bar in expense_bars:
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, f"{bar.get_height():.2f}", ha='center',
-                va='bottom', fontsize=7)
-
-    ax.set_xticks([i + width / 2 for i in x])
-    ax.set_xticklabels(months, ha='center', fontsize=8)
-    ax.set_title(f"Monthly Income and Expenses - {year}", fontsize=14, fontweight='bold', pad=20)
-    ax.set_xlabel("Month", fontsize=10, labelpad=10)
-    ax.set_ylabel("Amount", fontsize=10, labelpad=10)
-    ax.legend(fontsize=10, loc='upper right', frameon=True, edgecolor='black')
-
-    plt.tight_layout()
-
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', dpi=300)
-    buffer.seek(0)
-    image_png = buffer.getvalue()
-    buffer.close()
-    plt.close(fig)
-
-    chart_base64 = base64.b64encode(image_png).decode('utf-8')
-
-    return chart_base64, net_data
-
-
 @login_required
 def analytics(request):
     user = request.user
 
-    selected_year = request.GET.get('year', now().year)
     try:
-        selected_year = int(selected_year)
+        selected_year = int(request.GET.get('year', now().year))
     except ValueError:
         selected_year = now().year
 
     monthly_chart, monthly_net_data = generate_monthly_chart(user, selected_year)
+    years = Transaction.objects.filter(user=user).dates('date', 'year', order='ASC')  # NOQA
 
-    years = Transaction.objects.filter(user=user).dates('date', 'year')  # NOQA
-
-    transactions = Transaction.objects.filter(user=user, date__year=selected_year).order_by('date')  # NOQA
-    transactions_by_month = []
-    for month in range(1, 13):
-        month_transactions = transactions.filter(date__month=month)
-        month_name = calendar.month_name[month]
-        transactions_by_month.append({
-            "month": month_name,
-            "transactions": month_transactions,
-        })
+    transactions_by_month = [
+        {
+            "month": calendar.month_name[month],
+            "transactions": Transaction.objects.filter(  # NOQA
+                user=user,
+                date__year=selected_year,
+                date__month=month
+            ).order_by('date'),
+        }
+        for month in range(1, 13)
+    ]
 
     context = {
         'monthly_chart': monthly_chart,
@@ -219,28 +156,17 @@ def analytics(request):
         'years': [year.year for year in years],
         'transactions_by_month': transactions_by_month,
     }
+
     return render(request, "base/analytics.html", context)
 
 
 @login_required
 def membership(request):
-    """Display membership plans."""
     return render(request, "base/membership.html")
-
-
-def error_404(request, exception=None):  # NOQA
-    """Render a custom 404 page."""
-    return render(request, 'errors/404.html', status=404)
-
-
-def error_500(request, exception=None):  # NOQA
-    """Render a custom 500 page."""
-    return render(request, 'errors/500.html', status=500)
 
 
 @login_required
 def change_plan(request, plan):
-    """Change the user's membership plan."""
     valid_plans = ['free', 'premium', 'elite']
     if plan in valid_plans:
         profile = request.user.profile  # NOQA
@@ -252,119 +178,66 @@ def change_plan(request, plan):
     return redirect('membership')
 
 
-@login_required
-def all_transactions(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')  # NOQA
-    return render(request, 'crud/all_transactions.html', {'transactions': transactions})
+class TransactionListView(LoginRequiredMixin, ListView):
+    model = Transaction
+    template_name = 'crud/transactions.html'
+    context_object_name = 'transactions'
+
+    def get_queryset(self):
+        return Transaction.objects.filter(user=self.request.user).order_by('-date') # NOQA
 
 
-@login_required
-def add_transaction(request):
-    if request.method == "POST":
-        category_id = request.POST.get("category")
-        type = request.POST.get("type")  # NOQA
-        amount = request.POST.get("amount")
-        date = request.POST.get("date")
-        description = request.POST.get("description", "")
+class TransactionCreateView(LoginRequiredMixin, CreateView):
+    model = Transaction
+    fields = ['category', 'type', 'amount', 'date', 'description']
+    template_name = 'crud/transaction_create.html'
 
-        if not category_id or not type or not amount or not date:
-            messages.error(request, "All fields except description are required.")
-            return redirect("add_transaction")
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, "Transaction added successfully!")
+        return super().form_valid(form)
 
-        try:
-            category = Category.objects.get(id=category_id)  # NOQA
-            amount = float(amount)
-        except (Category.DoesNotExist, ValueError):  # NOQA
-            messages.error(request, "Invalid category or amount.")
-            return redirect("add_transaction")
+    def get_success_url(self):
+        return '/home/dashboard/'
 
-        Transaction.objects.create(  # NOQA
-            user=request.user,
-            category=category,
-            type=type,
-            amount=amount,
-            date=date,
-            description=description,
-        )
-        messages.success(request, "Transaction added successfully!")
-        return redirect("dashboard")
-
-    categories = Category.objects.all()  # NOQA
-    return render(request, "crud/create_transaction.html", {"categories": categories})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all() # NOQA
+        return context
 
 
-@login_required
-def add_saving_goal(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        target_amount = request.POST.get("target_amount")
-        transaction_ids = request.POST.getlist("transactions")
-        due_date = request.POST.get("due_date")
+class SavingGoalCreateView(LoginRequiredMixin, CreateView):
+    model = SavingsGoal
+    fields = ['name', 'target_amount', 'due_date']
+    template_name = 'crud/create_saving_goal.html'
 
-        if not name or not target_amount:
-            messages.error(request, "Name and target amount are required.")
-            return redirect("add_saving_goal")
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, "Savings goal added successfully!")
+        return super().form_valid(form)
 
-        try:
-            target_amount = float(target_amount)
-        except ValueError:
-            messages.error(request, "Invalid target amount.")
-            return redirect("add_saving_goal")
+    def get_success_url(self):
+        return '/home/dashboard/'
 
-        savings_goal = SavingsGoal.objects.create(  # NOQA
-            user=request.user,
-            name=name,
-            target_amount=target_amount,
-            due_date=due_date,
-        )
-
-        if transaction_ids:
-            try:
-                transactions = Transaction.objects.filter(id__in=transaction_ids, user=request.user)  # NOQA
-                savings_goal.transactions.add(*transactions)
-            except Exception:  # NOQA
-                messages.error(request, "An error occurred while assigning transactions.")
-                return redirect("add_saving_goal")
-
-        messages.success(request, "Savings goal added successfully!")
-        return redirect("dashboard")
-
-    available_transactions = Transaction.objects.filter(user=request.user).exclude(savings_goals__isnull=False)  # NOQA
-    return render(request, "crud/create_saving_goal.html", {"available_transactions": available_transactions})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['available_transactions'] = Transaction.objects.filter(user=self.request.user).exclude( # NOQA
+            savings_goals__isnull=False)
+        return context
 
 
-@login_required
-def add_budget(request):
-    if request.method == "POST":
-        amount = request.POST.get("amount")
-        description = request.POST.get("description", "")
-        month = request.POST.get("month")
-        year = request.POST.get("year")
+class BudgetCreateView(LoginRequiredMixin, CreateView):
+    model = Budget
+    fields = ['amount', 'description', 'month', 'year']
+    template_name = 'crud/create_budget.html'
 
-        if not amount or not month or not year:
-            messages.error(request, "All fields except description are required.")
-            return redirect("add_budget")
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, "Budget added successfully!")
+        return super().form_valid(form)
 
-        try:
-            amount = float(amount)
-            month = int(month)
-            year = int(year)
-        except (Category.DoesNotExist, ValueError):  # NOQA
-            messages.error(request, "Invalid input.")
-            return redirect("add_budget")
-
-        Budget.objects.create(  # NOQA
-            user=request.user,
-            amount=amount,
-            description=description,
-            month=month,
-            year=year,
-        )
-        messages.success(request, "Budget added successfully!")
-        return redirect("dashboard")
-
-    categories = Category.objects.all()  # NOQA
-    return render(request, "crud/create_budget.html", {"categories": categories})
+    def get_success_url(self):
+        return '/home/dashboard/'
 
 
 @login_required
@@ -389,8 +262,7 @@ def budget_manage(request, budget_id):
             messages.success(request, "Budget deleted successfully!")
             return redirect("dashboard")
 
-    categories = Category.objects.all()  # NOQA
-    return render(request, "crud/budget_manage.html", {"budget": budget, "categories": categories})
+    return render(request, "crud/budget_manage.html", {"budget": budget})
 
 
 @login_required
@@ -398,37 +270,33 @@ def saving_goal_manage(request, saving_goal_id):
     saving_goal = get_object_or_404(SavingsGoal, id=saving_goal_id, user=request.user)
 
     if request.method == "POST":
-        transaction_id = request.POST.get("transaction_id")
-        if "assign_transaction" in request.POST:
-            try:
-                transaction = Transaction.objects.get(id=transaction_id, user=request.user, type="income")
-                saving_goal.transactions.add(transaction)
-                messages.success(request, "Income transaction assigned to savings goal successfully!")
-            except Transaction.DoesNotExist:
-                messages.error(request, "Invalid or non-income transaction.")
-        elif "remove_transaction" in request.POST:
-            try:
-                transaction = Transaction.objects.get(id=transaction_id, user=request.user)
-                saving_goal.transactions.remove(transaction)
-                messages.success(request, "Transaction removed from savings goal successfully!")
-            except Transaction.DoesNotExist:
-                messages.error(request, "Invalid transaction.")
-        elif "delete_goal" in request.POST:
+        if "delete_goal" in request.POST:
             saving_goal.delete()
             messages.success(request, "Savings goal deleted successfully!")
             return redirect("dashboard")
 
-        saving_goal.refresh_from_db()
-        return redirect("saving_goal_manage", saving_goal_id=saving_goal.id)
+        remove_ids = request.POST.getlist("remove_transactions")
+        if remove_ids:
+            transactions = Transaction.objects.filter(id__in=remove_ids, user=request.user) # NOQA
+            saving_goal.transactions.remove(*transactions)
+            messages.success(request, f"{len(transactions)} transaction(s) removed from the savings goal.")
 
-    available_transactions = Transaction.objects.filter(
-        user=request.user, type="income"
-    ).exclude(savings_goals=saving_goal)
+        assign_ids = request.POST.getlist("assign_transactions")
+        if assign_ids:
+            transactions = Transaction.objects.filter(id__in=assign_ids, user=request.user, type="income") # NOQA
+            saving_goal.transactions.add(*transactions)
+            messages.success(request, f"{len(transactions)} transaction(s) assigned to the savings goal.")
 
-    return render(request, "crud/saving_goal_manage.html", {
+        return redirect("dashboard")
+
+    available_transactions = Transaction.objects.filter(user=request.user, type="income").exclude( # NOQA
+        savings_goals=saving_goal)
+
+    context = {
         "saving_goal": saving_goal,
         "available_transactions": available_transactions,
-    })
+    }
+    return render(request, "crud/saving_goal_manage.html", context)
 
 
 @login_required
@@ -439,30 +307,16 @@ def transaction_manage(request, transaction_id):
         if 'edit' in request.POST:
             try:
                 transaction.category_id = request.POST['category']
-
-                amount = request.POST.get('amount', '0')
-                if not amount.strip():
-                    amount = '0'
-                transaction.amount = float(amount)
-
+                transaction.amount = float(request.POST.get('amount', '0') or '0')
                 transaction.description = request.POST['description']
-
-                date = request.POST.get('date')
-                if date:
-                    transaction.date = date
-                else:
-                    raise ValueError("Date is required.")
-
+                transaction.date = request.POST.get('date') or transaction.date
                 transaction.save()
                 messages.success(request, "Transaction updated successfully!")
                 return redirect('dashboard')
-
             except ValueError as e:
                 messages.error(request, f"Error: {e}")
-                return redirect('transaction_manage', transaction_id=transaction.id)
-            except Exception as e:
-                messages.error(request, f"An unexpected error occurred. Please try again. {e}")
-                return redirect('transaction_manage', transaction_id=transaction.id)
+            except Exception:
+                messages.error(request, "An unexpected error occurred. Please try again.")
 
         elif 'delete' in request.POST:
             transaction.delete()
@@ -471,14 +325,13 @@ def transaction_manage(request, transaction_id):
 
     context = {
         'transaction': transaction,
-        'categories': Category.objects.all(),  # NOQA
+        'categories': Category.objects.all(), # NOQA
     }
     return render(request, 'crud/transaction_manage.html', context)
 
 
 @login_required
 def mark_all_notifications_as_read(request):
-    """Mark all notifications as read for the current user."""
     notifications = Notification.objects.filter(user=request.user, is_read=False)  # NOQA
     notifications.update(is_read=True)
     messages.success(request, "All notifications marked as read.")

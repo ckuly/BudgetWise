@@ -25,7 +25,7 @@ class Budget(models.Model):
 
     @property
     def transactions_total(self):
-        return Transaction.objects.filter( # NOQA
+        return Transaction.objects.filter(  # NOQA
             user=self.user,
             type="expense",
             date__year=self.year,

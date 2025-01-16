@@ -70,8 +70,7 @@ class NotificationAdmin(admin.ModelAdmin):
 
 @admin.register(Update)
 class UpdateAdmin(admin.ModelAdmin):
-    list_display = ("id", "version", "release_date")
-    readonly_fields = ("release_date",)
+    list_display = ("id", "version", "release_date", "release_date")
     search_fields = ("version", "description")
     ordering = ("-release_date",)
 
