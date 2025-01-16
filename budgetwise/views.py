@@ -315,7 +315,7 @@ def transaction_manage(request, transaction_id):
                 return redirect('dashboard')
             except ValueError as e:
                 messages.error(request, f"Error: {e}")
-            except Exception:
+            except Exception: # NOQA
                 messages.error(request, "An unexpected error occurred. Please try again.")
 
         elif 'delete' in request.POST:
