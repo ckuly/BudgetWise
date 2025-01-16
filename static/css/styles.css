@@ -99,13 +99,3 @@ button:hover,
 .nav-link:hover {
     transform: scale(1.05);
 }
-
-@media (max-width: 768px) {
-    nav .navbar-brand {
-        font-size: 1.5rem;
-    }
-
-    nav .nav-link {
-        font-size: 0.9rem;
-    }
-}
