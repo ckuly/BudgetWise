@@ -11,8 +11,8 @@ expenses, incomes, and savings goals while visualizing trends and generating fin
 2. Create and activate a virtual environment:
    ```bash
    python -m venv .venv
-   source .venv/bin/activate  # Windows: .venv\Scripts\activate
    ```
+
 3. Install dependencies:
    ```bash
    pip install -r requirements.txt
@@ -20,13 +20,23 @@ expenses, incomes, and savings goals while visualizing trends and generating fin
 4. Apply database migrations:
    ```bash
    python manage.py makemigrations
+   python manage.py makemigrations budgetwise
    python manage.py migrate
    ```
 5. Start the server:
    ```bash
    python manage.py runserver
    ```
-6. Open the app in your browser at `http://127.0.0.1:8000/`.
+6. Create a superuser:
+   ```bash
+   python manage.py createsuperuser
+   ```
+7. Create a `.env` file with the following content:
+   ```env
+   SECRET_KEY="<your-secret-key>"
+   EMAIL_HOST_PASSWORD="<your-email-host-password>"
+   ```
+8. Open the app in your browser at `http://127.0.0.1:8000/`.
 
 ## Usage
 
