@@ -4,38 +4,40 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white text-center">
-                    <h5>Profile Details</h5>
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h4 class="mb-0">Profile Details</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
                         {% csrf_token %}
 
                         <div class="text-center mb-4">
-                            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" width="120" height="120">
-                            <input type="file" id="profile_picture" name="profile_picture" class="form-control">
+                            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                                class="rounded-circle border border-2 mb-3"
+                                width="120" height="120">
+                            <input type="file" id="profile_picture" name="profile_picture" class="form-control mt-2">
                             <div class="form-check mt-2">
                                 <input type="checkbox" class="form-check-input" id="remove_picture" name="remove_picture">
                                 <label class="form-check-label" for="remove_picture">Remove Picture</label>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Username</label>
+                        <div class="mb-4">
+                            <label class="form-label">Username</label>
                             <input type="text" class="form-control text-muted" value="{{ user.username }}" readonly>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Email</label>
+                        <div class="mb-4">
+                            <label class="form-label">Email</label>
                             <input type="email" class="form-control text-muted" value="{{ user.email }}" readonly>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Currency</label>
+                        <div class="mb-4">
+                            <label class="form-label">Currency</label>
                             <select name="currency" class="form-select">
                                 {% for code, name in user.profile.CURRENCIES %}
                                     <option value="{{ code }}" {% if user.profile.currency == code %}selected{% endif %}>{{ name }}</option>
@@ -43,24 +45,26 @@
                             </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Current Plan</label>
-                            <input type="text" class="form-control text-muted" value="{{ user.profile.get_plan_display }}" readonly>
-                            <a href="{% url 'membership' %}" class="btn btn-link">Change Plan</a>
+                        <div class="mb-4">
+                            <label class="form-label">Current Plan</label>
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control text-muted me-3" value="{{ user.profile.get_plan_display }}" readonly>
+                                <a href="{% url 'membership' %}" class="btn btn-outline-primary">Change Plan</a>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Account Created At</label>
+                        <div class="mb-4">
+                            <label class="form-label">Account Created At</label>
                             <input type="text" class="form-control text-muted" value="{{ user.profile.created_at|date:'M d, Y H:i' }}" readonly>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Last Login</label>
+                        <div class="mb-4">
+                            <label class="form-label">Last Login</label>
                             <input type="text" class="form-control text-muted" value="{{ user.last_login|date:'M d, Y H:i' }}" readonly>
                         </div>
 
                         <div class="text-end">
-                            <a href="{% url 'password_change' %}" class="btn btn-link">Change Password</a>
+                            <a href="{% url 'password_change' %}" class="btn btn-outline-secondary me-2">Change Password</a>
                             <button type="submit" class="btn btn-success">Update Profile</button>
                         </div>
                     </form>
